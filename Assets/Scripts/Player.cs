@@ -9,6 +9,8 @@ public class Player : LivingEntity {
     public float pulseCooldown = 5;
     public float nextPulseAvailableTime;
 
+    public bool  NoInput = false;
+
     PlayerController controller;
 
     // Use this for initialization
@@ -21,8 +23,13 @@ public class Player : LivingEntity {
 	
 	// Update is called once per frame
 	void Update () {
+        if (NoInput)
+        {
+            return;
+        }
+
         //Movement Input
-        bool rotate = false;
+            bool rotate = false;
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
             rotate = true;
@@ -40,5 +47,16 @@ public class Player : LivingEntity {
                 print("Jump");
             }
         }
+    }
+
+    public void Goto(Vector3 pos)
+    {
+        NoInput = true;
+        controller.Move(Vector3.zero, false);
+        controller.MovePos(pos);
+    }
+
+    public void Standing() {
+        NoInput = false;
     }
 }

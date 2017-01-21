@@ -10,8 +10,10 @@ public class Enemy : LivingEntity
     NavMeshAgent pathFinder;
     Transform target;
 
+    public bool HasStopped = false;
+
     // Use this for initialization
-   public override void Start()
+    public override void Start()
     {
         base.Start();
         pathFinder = GetComponent < NavMeshAgent >();
@@ -23,7 +25,9 @@ public class Enemy : LivingEntity
     // Update is called once per frame
     void Update()
     {
-       
+        if (HasStopped) {
+            this.StopAllCoroutines();
+        }
     }
 
     IEnumerator updatePath()
