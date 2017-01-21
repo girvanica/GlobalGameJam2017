@@ -24,9 +24,9 @@ public class LivingEntity : MonoBehaviour, IDamageable
         health = startingHealth;
     }
 
-<<<<<<< HEAD
+
     public void TakeHit(float damage, RaycastHit hit)
-=======
+
 	void Update() {
 		if (damaged) 
 		{
@@ -40,7 +40,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
 	}
 
 	public void TakeHit(float damage, RaycastHit hit)
->>>>>>> 872c73182ff7316d1d4715c6ee136b460fa1425b
+
     {
         TakeDamage(damage);
     }
