@@ -30,3 +30,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/GlobalGameJam2017.sln
+/GlobalGameJam2017.csproj
+Library
+/GlobalGameJam2017.sln
