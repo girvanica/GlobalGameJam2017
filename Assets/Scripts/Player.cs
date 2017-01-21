@@ -15,8 +15,13 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Vector3 moveVelocity = moveInput.normalized * moveSpeed;
-        controller.Move(moveVelocity);
+        bool rotate = false;
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        {
+            rotate = true;
+        }
+            Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            Vector3 moveVelocity = moveInput.normalized * moveSpeed;
+            controller.Move(moveVelocity, rotate);
 	}
 }
