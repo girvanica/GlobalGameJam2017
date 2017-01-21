@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +15,8 @@ public class Player : LivingEntity {
     public bool  NoInput = false;
 
     PlayerController controller;
-	public Animation anim;
+
+
     public event System.Action OnDeath;
     public event System.Action OnTriggerPulse;
     public event System.Action OnTriggerDrop;
@@ -58,8 +59,6 @@ public class Player : LivingEntity {
                 AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
                 triggerPulse();
                 //print("Pulse");
-				pulseSlider.value = 0;
-				AnimatePulseUISlider (pulseCooldown);
             }
         }
 
@@ -72,11 +71,10 @@ public class Player : LivingEntity {
                 //print("Drop");
             }
         }
-    }
+       
 
-	public void AnimatePulseUISlider(float pulseCooldown) {
-		
-	}
+       
+    }
 
     public void Goto(Vector3 pos)
     {

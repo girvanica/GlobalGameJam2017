@@ -11,6 +11,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     protected float health;
     protected bool dead;
 	public Slider healthSlider;
+	public Slider pulseSlider;
 	public Image damageImage;
 	public float flashSpeed = 5f;
 	public Color flashColour = new Color(1f,0f,0f,0.1f);
@@ -41,7 +42,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
     {
         TakeDamage(damage);
     }
-
 
     public void TakeDamage(float damage)
     {
