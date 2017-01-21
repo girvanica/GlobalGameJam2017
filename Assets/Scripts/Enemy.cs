@@ -7,7 +7,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : LivingEntity
 {
-    public enum State { Idle, Chasing, Attacking };
+    public enum State { Idle, Chasing, Attacking, Baited };
     State currentState;
 
     NavMeshAgent pathFinder;
@@ -26,7 +26,6 @@ public class Enemy : LivingEntity
     float targetCollisionRadius;
 
     bool hasTarget;
-    bool itemDropped;
     public bool HasStopped = false;
 
     // Use this for initialization
@@ -45,19 +44,19 @@ public class Enemy : LivingEntity
             targetPlayer.OnTriggerPulse += OnTargetPulse;
             targetPlayer.OnTriggerDrop += OnTargetDrop;
 
-        
+
             currentState = State.Idle;
             hasTarget = false;
 
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
 
-            
+
         }
 
     }
 
-    
+
 
     void OnTargetDeath()
     {
@@ -70,22 +69,22 @@ public class Enemy : LivingEntity
     {
         hasTarget = true;
         currentState = State.Chasing;
-       // StartCoroutine(updatePath());
+        moveTime = Time.timeSinceLevelLoad + moveDuration;
     }
 
 
     void OnTargetDrop()
     {
-        itemDropped = true;
-        currentState = State.Chasing;
-      //  StartCoroutine(updatePath());
+        hasTarget = true;
+        currentState = State.Baited;
+        moveTime = Time.timeSinceLevelLoad + moveDuration;
     }
 
 
     // Update is called once per frame
     void Update()
     {
-      
+
         if (target != null)
         {
             StartCoroutine(updatePath());
@@ -144,52 +143,39 @@ public class Enemy : LivingEntity
     }
 
 
-        IEnumerator updatePath(){
-            float refreshRate = .25f;
-               
-            while (hasTarget){
-            
-            if (currentState == State.Chasing){
-                  
-                //Vector3 targetPosition = new Vector3(target.position.x, 0, target.position.z);
+    IEnumerator updatePath()
+    {
+        float refreshRate = .25f;
 
-                float elapsedTime = 0;
-               
-                while (elapsedTime <= moveDuration)
+        while (hasTarget)
+        {
+
+            if (currentState == State.Chasing)
+            {
+                while (Time.timeSinceLevelLoad < moveTime)
                 {
-                    
                     Vector3 dirToTarget = (target.position - transform.position).normalized;
                     Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
                     if (!dead)
                     {
-                        print("itemDropped: " + itemDropped);
-                        if (itemDropped)
-                        {
-                            pathFinder.SetDestination(targetPlayer.dropLocation);
-                            break;
-                        }
-                        else
-                        {
-                            pathFinder.SetDestination(targetPosition);
-                        }
-                        
+                        pathFinder.SetDestination(targetPosition);
                     }
-
-                    elapsedTime ++;
-
-                   yield return new WaitForSeconds(refreshRate);
+                    yield return new WaitForSeconds(refreshRate);
                 }
-                
             }
-
-            itemDropped = false;
+            if (currentState == State.Baited)
+            {
+                while (Time.timeSinceLevelLoad < moveTime)
+                {
+                    pathFinder.SetDestination(targetPlayer.dropLocation);
+                    yield return new WaitForSeconds(refreshRate);
+                }
+            }
             hasTarget = false;
             currentState = State.Idle;
-
-            
         }
-        }
-
     }
+
+}
 
 
