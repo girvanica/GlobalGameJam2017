@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
 
     public float moveSpeed = 5;
     PlayerController controller;
+    public Transform FogOfWarPlane;
 
 	// Use this for initialization
 	void Start () {
@@ -18,5 +19,10 @@ public class Player : MonoBehaviour {
         Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         controller.Move(moveVelocity);
-	}
+
+        if (FogOfWarPlane != null)
+        {
+            FogOfWarPlane.GetComponent<Renderer>().material.SetVector("_PlayerPos", transform.position);
+        }
+    }
 }
