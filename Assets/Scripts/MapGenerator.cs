@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Enemy))]
 public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
@@ -16,13 +18,29 @@ public class MapGenerator : MonoBehaviour {
 
 	Map currentMap;
 
-	void Start () {
+    public Enemy enemy;
+    public Player player;
+
+    void Start () {
 		GenerateMap ();
 //		currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
 	}
 
 	public void GenerateMap() {
-		currentMap = maps [currentMapIndex];
+
+        var destPlayer = GameObject.FindGameObjectWithTag("Player");
+        if(destPlayer != null)
+        {
+            DestroyImmediate(destPlayer);
+        }
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        print(enemies.Length);
+        for (var i = 0; i < enemies.Length; i++)
+        {
+            DestroyImmediate(enemies[i]);
+        }
+
+            currentMap = maps [currentMapIndex];
 		allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
@@ -30,7 +48,6 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 		shuffledQueue = new Queue<Coord> (Utility.ShuffleArray (allTileCoords.ToArray (), currentMap.seed));
-
 
 		string name = "map";
 		if (transform.FindChild (name)) {
@@ -54,7 +71,28 @@ public class MapGenerator : MonoBehaviour {
 
 		GenerateObstacles ();
 
-	}
+        //Spawn Enemies
+        int numEnemies = currentMap.Enemies;
+        System.Random r = new System.Random();
+        while (numEnemies > 0)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if(Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            {
+                print("Distance Ok");
+                if (!obstacles.Contains(randomCoord))
+                {
+                    //Spawn Enemy
+                    print("Spawn " + randomCoord.x + " " + randomCoord.y);
+
+                    Enemy spawnedEnemy = Instantiate(enemy, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity) as Enemy;
+                    numEnemies--;
+                }
+            }
+        }
+        Player spawnedPlayer = Instantiate(player, CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y, 1), Quaternion.identity) as Player;
+
+    }
 
 	void GenerateObstacles() {
 
@@ -99,8 +137,8 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
-	Vector3 CoordToPosition(int x, int y) {
-		Vector3 tilePosition = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, 0, -currentMap.mapSize.y/2 + 0.5f + y);
+	Vector3 CoordToPosition(int x, int y, int yOffset = 0) {
+		Vector3 tilePosition = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, yOffset, -currentMap.mapSize.y/2 + 0.5f + y);
 		return tilePosition;
 	}
 		
@@ -172,6 +210,8 @@ public class MapGenerator : MonoBehaviour {
 		[Range (0,1)]
 		public float outlinePercent = 0.05f;
 		public Coord spawnCoord;
+        public int minDistanceToPlayer = 10;
+        public int Enemies = 4;
 
 		public Map() {
 
