@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SplashLogic : MonoBehaviour {
 
@@ -9,33 +10,19 @@ public class SplashLogic : MonoBehaviour {
 	string textToFlash = "Press any key to experience your existential despair";
 	string blankText = "";
 	bool isBlinking = true;
-	float fadeOutDuration = 5f;
 
 	void Start(){
 		//get the Text component
 		flashingText = GetComponent<Text>();
 		//Call coroutine BlinkText on Start
 		StartCoroutine(BlinkText());
-		//call function to check if it is time to stop the flashing.
-		//StartCoroutine(StopBlinking());
 	}
 
 	void Update() {
-		if (Time.time > fadeOutDuration) {
-			Destroy (gameObject);
-		}
-
 		if (Input.anyKey) {
-
-			FadeOut ();
+			Destroy (gameObject);
+			SceneManager.LoadScene ("Menu");
 		}
-	}
-
-	void FadeOut() {
-		Color myColor = flashingText.color;
-		float ratio = Time.time / fadeOutDuration;
-		myColor.a = Mathf.Lerp (1, 0, ratio);
-		flashingText.color = myColor;
 	}
 
 	//function to blink the text 
