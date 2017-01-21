@@ -13,11 +13,13 @@ public class Enemy : LivingEntity
     NavMeshAgent pathFinder;
     Transform target;
     LivingEntity targetEntity;
+    Player targetPlayer;
 
     float attackDistanceThreshold = .5f;
     float timeBetweenAttacks = 1;
     float damage = 1;
-
+    float moveDuration = 5;
+    float moveTime;
     float nextAttackTime;
 
     float myCollisionRadius;
@@ -31,7 +33,6 @@ public class Enemy : LivingEntity
     {
         base.Start();
         pathFinder = GetComponent<NavMeshAgent>();
-        target = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
@@ -39,8 +40,13 @@ public class Enemy : LivingEntity
             targetEntity = target.GetComponent<LivingEntity>();
             targetEntity.OnDeath += OnTargetDeath;
 
-            currentState = State.Chasing;
-            hasTarget = true;
+            targetPlayer = target.GetComponent<Player>();
+            targetPlayer.OnTriggerPulse += OnTargetPulse;
+
+            //currentState = State.Chasing;
+            //hasTarget = true;
+            currentState = State.Idle;
+            hasTarget = false;
 
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
@@ -56,6 +62,14 @@ public class Enemy : LivingEntity
     {
         hasTarget = false;
         currentState = State.Idle;
+    }
+
+
+    void OnTargetPulse()
+    {
+        hasTarget = true;
+        print("hasTarget");
+        currentState = State.Chasing;
         StartCoroutine(updatePath());
     }
 
@@ -114,9 +128,6 @@ public class Enemy : LivingEntity
             {
                 this.StopAllCoroutines();
             }
-
-
-
             currentState = State.Chasing;
             pathFinder.enabled = true;
 
@@ -128,19 +139,34 @@ public class Enemy : LivingEntity
         IEnumerator updatePath(){
             float refreshRate = .25f;
 
+        print("hasTarget: " + hasTarget);
             while (hasTarget){
-                if (currentState == State.Chasing){
+            print("currentState: " + currentState);
+            if (currentState == State.Chasing){
                     Vector3 dirToTarget = (target.position - transform.position).normalized;
                     Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
-                    //Vector3 targetPosition = new Vector3(target.position.x, 0, target.position.z);
+                //Vector3 targetPosition = new Vector3(target.position.x, 0, target.position.z);
+
+                float elapsedTime = 0;
+               
+                while (elapsedTime < moveDuration)
+                {
                     if (!dead)
                     {
                         pathFinder.SetDestination(target.position);
                     }
+
+                    elapsedTime += Time.deltaTime;
                 }
-               
-                yield return new WaitForSeconds(refreshRate);
-            }
+                    
+                }
+
+
+            hasTarget = false;
+            currentState = State.Idle;
+
+            yield return new WaitForSeconds(refreshRate);
+        }
         }
 
     }

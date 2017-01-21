@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿using System;
+/// <summary>
 /// Static Calls Useful Everywhere.
 /// </summary>
 public static class Utility {
@@ -21,4 +22,9 @@ public static class Utility {
 
 		return array;
 	}
+
+    public static bool DistanceBetweenCoords(int x1, int y1, int x2, int y2, int distance)
+    {
+        return (Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2)) < (distance * distance);
+    }
 }
