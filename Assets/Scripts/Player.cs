@@ -9,7 +9,7 @@ public class Player : LivingEntity {
     PlayerController controller;
 
     // Use this for initialization
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         controller = GetComponent<PlayerController>();
