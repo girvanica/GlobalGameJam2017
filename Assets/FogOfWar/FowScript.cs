@@ -18,8 +18,9 @@ public class FowScript : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        var player = GameObject.Find("Player");
-        UpdateMaterial(player);
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+            UpdateMaterial(player);
         if (_canBreath)
         {
             _FogRadius += 0.02f * signal;
@@ -30,7 +31,8 @@ public class FowScript : MonoBehaviour {
                 {
                     _isPlaying = true;
                     _time = Time.realtimeSinceStartup;
-                    player.GetComponent<AudioSource>().Play();
+                    if (player != null)
+                        player.GetComponent<AudioSource>().Play();
                 }
             }
             if (_FogRadius > 9.5)

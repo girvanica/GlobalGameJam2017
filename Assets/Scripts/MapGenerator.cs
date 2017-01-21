@@ -42,7 +42,14 @@ public class MapGenerator : MonoBehaviour {
             DestroyImmediate(enemies[i]);
         }
 
-            currentMap = maps [currentMapIndex];
+        var destKey = GameObject.FindGameObjectWithTag("Key");
+        DestroyImmediate(destKey);
+
+        var destPlatform = GameObject.FindGameObjectWithTag("Platform");
+        DestroyImmediate(destPlatform);
+
+
+        currentMap = maps [currentMapIndex];
 		allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
