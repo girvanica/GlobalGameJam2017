@@ -15,13 +15,22 @@ public class MapGenerator : MonoBehaviour {
 	List<Coord> obstacles;
 	Map currentMap;
 
+    public Enemy enemy;
+
 	void Start () {
 		GenerateMap ();
 //		currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
 	}
 
 	public void GenerateMap() {
-		currentMap = maps [currentMapIndex];
+
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        for (var i = 0; i < enemies.Length; i++)
+        {
+            Destroy(enemies[i]);
+        }
+
+            currentMap = maps [currentMapIndex];
 		allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
@@ -29,7 +38,6 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 		shuffledQueue = new Queue<Coord> (Utility.ShuffleArray (allTileCoords.ToArray (), currentMap.seed));
-
 
 		string name = "map";
 		if (transform.FindChild (name)) {
@@ -53,7 +61,22 @@ public class MapGenerator : MonoBehaviour {
 
 		GenerateObstacles ();
 
-	}
+        int numEnemies = currentMap.Enemies;
+        System.Random r = new System.Random();
+        while (numEnemies > 0)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if(Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            {
+                if(!obstacles.Contains(randomCoord))
+                {
+                    //Spawn Enemy
+                    Enemy spawnedEnemy = Instantiate(enemy, new Vector3(randomCoord.x, randomCoord.y, 1), Quaternion.identity) as Enemy;
+                }
+            }
+        }
+
+    }
 
 	void GenerateObstacles() {
 
@@ -171,6 +194,8 @@ public class MapGenerator : MonoBehaviour {
 		[Range (0,1)]
 		public float outlinePercent = 0.05f;
 		public Coord spawnCoord;
+        public int minDistanceToPlayer = 10;
+        public int Enemies = 4;
 
 		public Map() {
 
