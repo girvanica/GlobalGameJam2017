@@ -67,7 +67,7 @@ public class PlayerPulse : MonoBehaviour {
 			fadeTo = 0f;
 			lightComp.intensity = Mathf.InverseLerp (fadeFrom, fadeTo, pulseStartTimeDelta * fadeRate);
 			lightComp.enabled = false;
-			print (isPulsing);
+			//print (isPulsing);
 		}
 	}
 }
