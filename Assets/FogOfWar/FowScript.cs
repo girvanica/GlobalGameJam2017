@@ -19,7 +19,7 @@ public class FowScript : MonoBehaviour {
 
     public void UpdateMaterial()
     {
-        var material = GetComponent<Renderer>().material;
+        var material = GetComponent<Renderer>().sharedMaterial;
         if (material != null)
         {
             material.SetFloat("_FogRadius", _FogRadius);
