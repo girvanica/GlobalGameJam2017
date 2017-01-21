@@ -11,6 +11,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     protected float health;
     protected bool dead;
 	public Slider healthSlider;
+	public Slider pulseSlider;
 	public Image damageImage;
 	public float flashSpeed = 5f;
 	public Color flashColour = new Color(1f,0f,0f,0.1f);
@@ -42,7 +43,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
         TakeDamage(damage);
     }
 
-
     public void TakeDamage(float damage)
     {
         // Play sound
@@ -65,6 +65,9 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     protected void Die()
     {
+        // Play sound
+        var audioClip = Resources.Load<AudioClip>("ed_hero_death");
+        AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
         dead = true;
         if(OnDeath != null)
         {
