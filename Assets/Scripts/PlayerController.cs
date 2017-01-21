@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 
     Rigidbody rig;
     Vector3 vel;
+    public float rotationSpeed = 7;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +17,8 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         rig.MovePosition(rig.position + vel * Time.fixedDeltaTime);
-	}
+        transform.rotation = Quaternion.LookRotation(-vel);
+    }
 
     public void Move(Vector3 _vel) {
         vel = _vel;
