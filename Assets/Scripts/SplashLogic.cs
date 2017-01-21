@@ -26,6 +26,7 @@ public class SplashLogic : MonoBehaviour {
 		}
 
 		if (Input.anyKey) {
+
 			FadeOut ();
 		}
 	}
