@@ -20,6 +20,8 @@ public class MapGenerator : MonoBehaviour {
 
     public Enemy enemy;
     public Player player;
+    public Key key;
+    public Platform platform;
 
     void Start () {
 		GenerateMap ();
@@ -92,9 +94,36 @@ public class MapGenerator : MonoBehaviour {
         }
         Player spawnedPlayer = Instantiate(player, CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y, 1), Quaternion.identity) as Player;
 
+        // Spawn Key
+        while (true)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            {
+                if (!obstacles.Contains(randomCoord))
+                {
+                    Instantiate(key, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
+                    break;
+                }
+            }
+        }
+
+        // Spawn Platform
+        //while (true)
+        //{
+        //    Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+        //    if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+        //    {
+        //        if (!obstacles.Contains(randomCoord))
+        //        {
+        //            Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
+        //            break;
+        //        }
+        //    }
+        //}
     }
 
-	void GenerateObstacles() {
+    void GenerateObstacles() {
 
 		obstacles = new List<Coord> ();
 		obstacleMap = new bool[(int)currentMap.mapSize.x, (int)currentMap.mapSize.y];

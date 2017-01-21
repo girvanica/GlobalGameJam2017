@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatformScript : MonoBehaviour {
+public class Platform : MonoBehaviour {
 
     bool _startAnimation;
     float _time;
@@ -16,7 +16,7 @@ public class PlatformScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (_startAnimation) {
-            var player = GameObject.Find("Player");
+            var player = GameObject.FindGameObjectWithTag("Player");
             if (Time.realtimeSinceStartup - _time < 2 )
             {
                 Vector3 pos = _platform.transform.position;
@@ -32,9 +32,9 @@ public class PlatformScript : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.name == "Player")
+        if (col.gameObject.tag == "Player")
         {
-            if (col.gameObject.GetComponent<PlayerKey>().NumberOfKeys > 0)
+            if (col.gameObject.GetComponent<Key>().NumberOfKeys > 0)
             {
                 _time = Time.realtimeSinceStartup;
                 _startAnimation = true;
