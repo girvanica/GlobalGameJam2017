@@ -8,14 +8,14 @@ public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
 	public Transform obstaclePrefab;
-	public Map [] maps;
+	public Transform navMeshFloor;
+
+    public Map [] maps;
 	public int currentMapIndex;
 	List<Coord> allTileCoords;
 	Queue<Coord> shuffledQueue;
-
 	List<Coord> obstacles;
 	bool [,] obstacleMap;
-
 	Map currentMap;
 
     public Enemy enemy;
@@ -24,8 +24,8 @@ public class MapGenerator : MonoBehaviour {
     public Platform platform;
 
     void Start () {
-		GenerateMap ();
-//		currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
+		//GenerateMap ();
+        //currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
 	}
 
 	public void GenerateMap() {
@@ -50,7 +50,7 @@ public class MapGenerator : MonoBehaviour {
 
 
         currentMap = maps [currentMapIndex];
-		allTileCoords = new List<Coord> ();
+        allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
 				allTileCoords.Add(new Coord(x, y));
@@ -70,9 +70,9 @@ public class MapGenerator : MonoBehaviour {
 
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
-				Vector3 tilePosition = CoordToPosition (x, y);
+                Vector3 tilePosition = CoordToPosition (x, y);
 				Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
-				newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent);
+				newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent) * currentMap.tileSize;
 				newTile.parent = mapHolder;
 			}
 		}
@@ -80,13 +80,16 @@ public class MapGenerator : MonoBehaviour {
 
 		GenerateObstacles ();
 		GenerateExternalWalls ();
+
+        navMeshFloor.localScale = new Vector3(currentMap.mapSize.x, currentMap.mapSize.y) * currentMap.tileSize;
+
         //Spawn Enemies
         int numEnemies = currentMap.Enemies;
         System.Random r = new System.Random();
         while (numEnemies > 0)
         {
             Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
-            if(Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            if(Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y),CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minDistanceToPlayer)
             {
                 print("Distance Ok");
                 if (!obstacles.Contains(randomCoord))
@@ -105,7 +108,7 @@ public class MapGenerator : MonoBehaviour {
         while (true)
         {
             Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
-            if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            if (Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y), CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minDistanceToPlayer)
             {
                 if (!obstacles.Contains(randomCoord))
                 {
@@ -160,8 +163,9 @@ public class MapGenerator : MonoBehaviour {
 				Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * height/2), Quaternion.identity) as Transform;
 				obstacle.parent = obstacleHolder;
 
-				obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
-				obstacles.Add (coord);
+                obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
+
+                obstacles.Add (coord);
 				this.obstacleMap [coord.x, coord.y] = true;
 			} else {
 				containsObstacle [coord.x, coord.y] = false;
@@ -266,7 +270,7 @@ public class MapGenerator : MonoBehaviour {
 		public int seed = 10;
 		public float minObstacleHeight;
 		public float maxObstacleHeight;
-		public int tileSize = 1;
+		public float tileSize = 1;
 		[Range (0,1)]
 		public float outlinePercent = 0.05f;
 		public Coord spawnCoord;
