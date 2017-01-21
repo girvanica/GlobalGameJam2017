@@ -45,7 +45,11 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-		damaged = true;
+        // Play sound
+        var audioClip = Resources.Load<AudioClip>("ed_enemy_hit");
+        AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
+
+        damaged = true;
 
         health -= damage;
 
