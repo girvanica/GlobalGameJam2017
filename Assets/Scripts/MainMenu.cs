@@ -2,14 +2,12 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class QuitMenu : MonoBehaviour {
+public class MainMenu : MonoBehaviour {
 
 	public Canvas quitMenu;
 	public Button startText;
 	public Button exitText;
 
-
-	// Use this for initialization
 	void Start () {
 		quitMenu = quitMenu.GetComponent<Canvas> ();
 		startText = startText.GetComponent<Button> ();
@@ -30,7 +28,7 @@ public class QuitMenu : MonoBehaviour {
 	}
 
 	public void StartGame() {
-		SceneManager.LoadScene (1); 
+		SceneManager.LoadScene ("MainScene"); 
 	}
 
 	public void ExitGame() {
