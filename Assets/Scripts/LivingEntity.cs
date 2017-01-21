@@ -65,6 +65,9 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     protected void Die()
     {
+        // Play sound
+        var audioClip = Resources.Load<AudioClip>("ed_hero_death");
+        AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
         dead = true;
         if(OnDeath != null)
         {
