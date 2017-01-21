@@ -36,7 +36,7 @@ public class MapGenerator : MonoBehaviour {
             DestroyImmediate(destPlayer);
         }
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        print(enemies.Length);
+        //print(enemies.Length);
         for (var i = 0; i < enemies.Length; i++)
         {
             DestroyImmediate(enemies[i]);
@@ -91,11 +91,11 @@ public class MapGenerator : MonoBehaviour {
             Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
             if(Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y),CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minDistanceToPlayer)
             {
-                print("Distance Ok");
+                //print("Distance Ok");
                 if (!obstacles.Contains(randomCoord))
                 {
                     //Spawn Enemy
-                    print("Spawn " + randomCoord.x + " " + randomCoord.y);
+                    //print("Spawn " + randomCoord.x + " " + randomCoord.y);
 
                     Enemy spawnedEnemy = Instantiate(enemy, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity) as Enemy;
                     numEnemies--;

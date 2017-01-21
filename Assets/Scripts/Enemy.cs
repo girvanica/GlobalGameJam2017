@@ -162,7 +162,7 @@ public class Enemy : LivingEntity
                     Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
                     if (!dead)
                     {
-                        print("itemDropped: " + itemDropped);
+                        //print("itemDropped: " + itemDropped);
                         if (itemDropped)
                         {
                             pathFinder.SetDestination(targetPlayer.dropLocation);
