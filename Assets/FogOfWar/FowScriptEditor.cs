@@ -10,6 +10,6 @@ public class FowScriptEditor : Editor
     {
         base.OnInspectorGUI();
         FowScript fow = target as FowScript;
-        fow.UpdateMaterial();
+        //fow.UpdateMaterial();
     }
 }
