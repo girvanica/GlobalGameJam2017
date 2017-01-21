@@ -16,10 +16,12 @@ public class MapGenerator : MonoBehaviour {
 	public float outlinePercent;
 	public int obstacleCount;
 	public int seed = 10;
-
+	public Vector2 spawnPoint = new Vector2(1, 1);
+	Coord spawnCoord;
+	List<Coord> obstacles;
 	void Start () {
 		GenerateMap ();
-
+		spawnCoord = new Coord ((int)spawnPoint.x, (int)spawnPoint.y);
 	}
 
 	public void GenerateMap() {
@@ -54,9 +56,12 @@ public class MapGenerator : MonoBehaviour {
 
 
 		GenerateObstacles ();
+
 	}
 
 	void GenerateObstacles() {
+
+		obstacles = new List<Coord> ();
 
 		string name = "obstacles";
 		if (transform.FindChild (name)) {
@@ -66,12 +71,27 @@ public class MapGenerator : MonoBehaviour {
 		Transform obstacleHolder = new GameObject (name).transform;
 		obstacleHolder.parent = transform;
 
+		bool [,] containsObstacle = new bool[(int)mapSize.x, (int)mapSize.y];
+		int currentObstacleCount = 0;
 		for (int i = 0; i < obstacleCount; i++) {
 			Coord coord = GetRandomCoord ();
 			Vector3 vec3 = CoordToPosition (coord.x, coord.y);
+			containsObstacle [coord.x, coord.y] = true;
+			currentObstacleCount++;
 
-			Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * 0.5f), Quaternion.identity) as Transform;
-			obstacle.parent = obstacleHolder;
+			if (coord.x != spawnPoint.x && coord.y != spawnPoint.y 
+				&& MapIsFullyAccessible(containsObstacle, currentObstacleCount)) {
+				Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * 0.5f), Quaternion.identity) as Transform;
+				obstacle.parent = obstacleHolder;
+				obstacles.Add (coord);
+
+			} else {
+				containsObstacle [coord.x, coord.y] = false;
+				currentObstacleCount--;
+			}
+
+
+
 		}
 	}
 
@@ -87,6 +107,41 @@ public class MapGenerator : MonoBehaviour {
 		shuffledQueue.Enqueue (coord);
 
 		return coord;
+	}
+
+	bool MapIsFullyAccessible( bool[,]obstacleMap, int obstacleCount) {
+		bool [,] visited = new bool[obstacleMap.GetLength(0), obstacleMap.GetLength(1)]; 
+		Queue<Coord> queue = new Queue<Coord> ();
+		queue.Enqueue (spawnCoord);
+
+		int visitedTileCount = 0;
+
+		while (queue.Count > 0) {
+			Coord current = queue.Dequeue ();
+//			Debug.Log ("checking " + current.x + "," + current.y);
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					int neighbourX = current.x + x;
+					int neighbourY = current.y + y;
+
+					if (x == 0 || y == 0) {
+						if (neighbourX >= 0 && neighbourX < obstacleMap.GetLength (0)
+						    && neighbourY >= 0 && neighbourY < obstacleMap.GetLength (1)) {
+
+							if (!visited[neighbourX, neighbourY] &&  !obstacleMap[neighbourX, neighbourY]) {
+								visited[neighbourX, neighbourY] = true;
+//								Debug.Log ("visited " + neighbourX + "," + neighbourY);
+								queue.Enqueue(new Coord(neighbourX, neighbourY));
+								visitedTileCount++;
+							}
+
+						}
+					}
+				}
+			}
+		}
+
+		return visitedTileCount == ((mapSize.x * mapSize.y) - obstacleCount);
 	}
 
 	public struct Coord {
