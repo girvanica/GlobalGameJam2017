@@ -7,32 +7,30 @@ public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
 	public Transform obstaclePrefab;
-
-	public Vector2 mapSize;
-	public int tileSize;
+	public Map [] maps;
+	public int currentMapIndex;
 	List<Coord> allTileCoords;
 	Queue<Coord> shuffledQueue;
-	[Range (0,1)]
-	public float outlinePercent;
-	public int obstacleCount;
-	public int seed = 10;
-	public Vector2 spawnPoint = new Vector2(1, 1);
-	Coord spawnCoord;
+
 	List<Coord> obstacles;
+	bool [,] obstacleMap;
+
+	Map currentMap;
+
 	void Start () {
 		GenerateMap ();
-		spawnCoord = new Coord ((int)spawnPoint.x, (int)spawnPoint.y);
+//		currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
 	}
 
 	public void GenerateMap() {
-
+		currentMap = maps [currentMapIndex];
 		allTileCoords = new List<Coord> ();
-		for (int x = 0; x < mapSize.x; x++) {
-			for (int y = 0; y < mapSize.y; y++) {
+		for (int x = 0; x < currentMap.mapSize.x; x++) {
+			for (int y = 0; y < currentMap.mapSize.y; y++) {
 				allTileCoords.Add(new Coord(x, y));
 			}
 		}
-		shuffledQueue = new Queue<Coord> (Utility.ShuffleArray (allTileCoords.ToArray (), seed));
+		shuffledQueue = new Queue<Coord> (Utility.ShuffleArray (allTileCoords.ToArray (), currentMap.seed));
 
 
 		string name = "map";
@@ -45,11 +43,11 @@ public class MapGenerator : MonoBehaviour {
 		Transform mapHolder = new GameObject (name).transform;
 		mapHolder.parent = transform;
 
-		for (int x = 0; x < mapSize.x; x++) {
-			for (int y = 0; y < mapSize.y; y++) {
+		for (int x = 0; x < currentMap.mapSize.x; x++) {
+			for (int y = 0; y < currentMap.mapSize.y; y++) {
 				Vector3 tilePosition = CoordToPosition (x, y);
 				Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
-				newTile.localScale = Vector3.one * (1 - outlinePercent);
+				newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent);
 				newTile.parent = mapHolder;
 			}
 		}
@@ -62,7 +60,7 @@ public class MapGenerator : MonoBehaviour {
 	void GenerateObstacles() {
 
 		obstacles = new List<Coord> ();
-
+		obstacleMap = new bool[(int)currentMap.mapSize.x, (int)currentMap.mapSize.y];
 		string name = "obstacles";
 		if (transform.FindChild (name)) {
 			DestroyImmediate(transform.FindChild(name).gameObject);
@@ -71,20 +69,27 @@ public class MapGenerator : MonoBehaviour {
 		Transform obstacleHolder = new GameObject (name).transform;
 		obstacleHolder.parent = transform;
 
-		bool [,] containsObstacle = new bool[(int)mapSize.x, (int)mapSize.y];
+		System.Random rand = new System.Random (4);
+
+		bool [,] containsObstacle = new bool[(int)currentMap.mapSize.x, (int)currentMap.mapSize.y];
 		int currentObstacleCount = 0;
-		for (int i = 0; i < obstacleCount; i++) {
+		for (int i = 0; i < currentMap.maxObstacleCount; i++) {
 			Coord coord = GetRandomCoord ();
 			Vector3 vec3 = CoordToPosition (coord.x, coord.y);
 			containsObstacle [coord.x, coord.y] = true;
 			currentObstacleCount++;
 
-			if (coord.x != spawnPoint.x && coord.y != spawnPoint.y 
+			if (coord.x != currentMap.spawnCoord.x && coord.y != currentMap.spawnCoord.y 
 				&& MapIsFullyAccessible(containsObstacle, currentObstacleCount)) {
-				Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * 0.5f), Quaternion.identity) as Transform;
-				obstacle.parent = obstacleHolder;
-				obstacles.Add (coord);
 
+				float height = (float)rand.NextDouble () + currentMap.minObstacleHeight;
+				height = Mathf.Min (height, currentMap.maxObstacleHeight);
+				Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * height/2), Quaternion.identity) as Transform;
+				obstacle.parent = obstacleHolder;
+
+				obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
+				obstacles.Add (coord);
+				this.obstacleMap [coord.x, coord.y] = true;
 			} else {
 				containsObstacle [coord.x, coord.y] = false;
 				currentObstacleCount--;
@@ -96,7 +101,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	Vector3 CoordToPosition(int x, int y) {
-		Vector3 tilePosition = new Vector3 (-mapSize.x/2 + 0.5f + x, 0, -mapSize.y/2 + 0.5f + y);
+		Vector3 tilePosition = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, 0, -currentMap.mapSize.y/2 + 0.5f + y);
 		return tilePosition;
 	}
 		
@@ -109,10 +114,10 @@ public class MapGenerator : MonoBehaviour {
 		return coord;
 	}
 
-	bool MapIsFullyAccessible( bool[,]obstacleMap, int obstacleCount) {
+	bool MapIsFullyAccessible( bool[,]obstacleMap, int currentObstacleCount) {
 		bool [,] visited = new bool[obstacleMap.GetLength(0), obstacleMap.GetLength(1)]; 
 		Queue<Coord> queue = new Queue<Coord> ();
-		queue.Enqueue (spawnCoord);
+		queue.Enqueue (currentMap.spawnCoord);
 
 		int visitedTileCount = 0;
 
@@ -141,9 +146,10 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
-		return visitedTileCount == ((mapSize.x * mapSize.y) - obstacleCount);
+		return visitedTileCount == ((currentMap.mapSize.x * currentMap.mapSize.y) - currentObstacleCount);
 	}
 
+	[System.Serializable]
 	public struct Coord {
 
 		public int x;
@@ -153,5 +159,24 @@ public class MapGenerator : MonoBehaviour {
 			x = _x;
 			y = _y;
 		}
+	}
+
+	[System.Serializable]
+	public class Map {
+
+		public Coord mapSize = new Coord(10,10);
+		public float maxObstacleCount = 60;
+		public int seed = 10;
+		public float minObstacleHeight;
+		public float maxObstacleHeight;
+		public int tileSize = 1;
+		[Range (0,1)]
+		public float outlinePercent = 0.05f;
+		public Coord spawnCoord;
+
+		public Map() {
+
+		}
+
 	}
 }

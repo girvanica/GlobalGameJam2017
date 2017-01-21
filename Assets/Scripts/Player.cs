@@ -13,6 +13,8 @@ public class Player : LivingEntity {
 
     PlayerController controller;
 
+    public event System.Action OnDeath;
+    public event System.Action OnTriggerPulse;
     // Use this for initialization
     public override void Start()
     {
@@ -44,7 +46,7 @@ public class Player : LivingEntity {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
-                print("Jump");
+                print("Pulse");
             }
         }
     }
