@@ -8,17 +8,25 @@ public class Player : LivingEntity {
     public float moveSpeed = 5;
     public float pulseCooldown = 5;
     public float nextPulseAvailableTime;
+    
+    public float maxDrops = 10;
+    protected float dropsLeft;
 
     public bool  NoInput = false;
 
     PlayerController controller;
 
+
     public event System.Action OnDeath;
     public event System.Action OnTriggerPulse;
+    public event System.Action OnTriggerDrop;
+
+    public Vector3 dropLocation;
     // Use this for initialization
     protected override void Start()
     {
         base.Start();
+        dropsLeft = maxDrops;
         controller = GetComponent<PlayerController>();
         nextPulseAvailableTime = Time.timeSinceLevelLoad;
     }
@@ -41,7 +49,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetAxis("Jump") != 0)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
@@ -53,6 +61,19 @@ public class Player : LivingEntity {
                 print("Pulse");
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (dropsLeft > 0)
+            {
+                dropsLeft--;
+                triggerDrop();
+                print("Drop");
+            }
+        }
+       
+
+       
     }
 
     public void Goto(Vector3 pos)
@@ -71,6 +92,19 @@ public class Player : LivingEntity {
         if (OnTriggerPulse != null)
         {
             OnTriggerPulse();
+        }
+    }
+
+
+    public void triggerDrop()
+    {
+        if (OnTriggerDrop != null)
+        {
+            if (GameObject.FindGameObjectWithTag("Player") != null)
+            {                
+                dropLocation = GameObject.FindGameObjectWithTag("Player").transform.position;
+            }
+            OnTriggerDrop();
         }
     }
 }

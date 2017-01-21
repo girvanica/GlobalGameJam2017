@@ -17,7 +17,7 @@ public class Enemy : LivingEntity
 
     float attackDistanceThreshold = .5f;
     float timeBetweenAttacks = 1;
-    float damage = 1;
+    public float damage = 1;
     public float moveDuration = 5;
     float moveTime;
     float nextAttackTime;
@@ -26,6 +26,7 @@ public class Enemy : LivingEntity
     float targetCollisionRadius;
 
     bool hasTarget;
+    bool itemDropped;
     public bool HasStopped = false;
 
     // Use this for initialization
@@ -42,16 +43,16 @@ public class Enemy : LivingEntity
 
             targetPlayer = target.GetComponent<Player>();
             targetPlayer.OnTriggerPulse += OnTargetPulse;
+            targetPlayer.OnTriggerDrop += OnTargetDrop;
 
-            //currentState = State.Chasing;
-            //hasTarget = true;
+        
             currentState = State.Idle;
             hasTarget = false;
 
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
 
-            StartCoroutine(updatePath());
+            
         }
 
     }
@@ -69,9 +70,16 @@ public class Enemy : LivingEntity
     {
         hasTarget = true;
         currentState = State.Chasing;
-        StartCoroutine(updatePath());
+       // StartCoroutine(updatePath());
     }
 
+
+    void OnTargetDrop()
+    {
+        itemDropped = true;
+        currentState = State.Chasing;
+      //  StartCoroutine(updatePath());
+    }
 
 
     // Update is called once per frame
@@ -80,6 +88,7 @@ public class Enemy : LivingEntity
       
         if (target != null)
         {
+            StartCoroutine(updatePath());
             if (Time.time > nextAttackTime)
             {
                 float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
@@ -103,7 +112,6 @@ public class Enemy : LivingEntity
         Vector3 originalPosition = transform.position;
         Vector3 dirToTarget = (target.position - transform.position).normalized;
         Vector3 attackPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius);
-
 
         float attackSpeed = 3;
         float percent = 0;
@@ -154,7 +162,17 @@ public class Enemy : LivingEntity
                     Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
                     if (!dead)
                     {
-                        pathFinder.SetDestination(targetPosition);
+                        print("itemDropped: " + itemDropped);
+                        if (itemDropped)
+                        {
+                            pathFinder.SetDestination(targetPlayer.dropLocation);
+                            break;
+                        }
+                        else
+                        {
+                            pathFinder.SetDestination(targetPosition);
+                        }
+                        
                     }
 
                     elapsedTime ++;
@@ -164,7 +182,7 @@ public class Enemy : LivingEntity
                 
             }
 
-
+            itemDropped = false;
             hasTarget = false;
             currentState = State.Idle;
 

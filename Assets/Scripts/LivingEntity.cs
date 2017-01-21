@@ -37,6 +37,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
 	}
 
 	public void TakeHit(float damage, RaycastHit hit)
+
     {
         TakeDamage(damage);
     }
