@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
-public class Player : MonoBehaviour {
+public class Player : LivingEntity {
 
     public float moveSpeed = 5;
     PlayerController controller;
 
     // Use this for initialization
-    void Start () {
+    public override void Start()
+    {
+        base.Start();
         controller = GetComponent<PlayerController>();
     }
 	
