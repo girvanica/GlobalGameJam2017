@@ -29,6 +29,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	public void GenerateMap() {
+        System.Random r = new System.Random();
 
         var destPlayer = GameObject.FindGameObjectWithTag("Player");
         if(destPlayer != null)
@@ -50,6 +51,7 @@ public class MapGenerator : MonoBehaviour {
 
 
         currentMap = maps [currentMapIndex];
+        currentMap.seed = r.Next(0, 1000);
         allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
@@ -85,7 +87,7 @@ public class MapGenerator : MonoBehaviour {
 
         //Spawn Enemies
         int numEnemies = currentMap.Enemies;
-        System.Random r = new System.Random();
+        
         while (numEnemies > 0)
         {
             Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
