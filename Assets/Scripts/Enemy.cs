@@ -18,7 +18,7 @@ public class Enemy : LivingEntity
     float attackDistanceThreshold = .5f;
     float timeBetweenAttacks = 1;
     float damage = 1;
-    float moveDuration = 5;
+    public float moveDuration = 5;
     float moveTime;
     float nextAttackTime;
 
@@ -68,7 +68,6 @@ public class Enemy : LivingEntity
     void OnTargetPulse()
     {
         hasTarget = true;
-        print("hasTarget");
         currentState = State.Chasing;
         StartCoroutine(updatePath());
     }
@@ -78,7 +77,8 @@ public class Enemy : LivingEntity
     // Update is called once per frame
     void Update()
     {
-        if (hasTarget)
+      
+        if (target != null)
         {
             if (Time.time > nextAttackTime)
             {
@@ -138,34 +138,37 @@ public class Enemy : LivingEntity
 
         IEnumerator updatePath(){
             float refreshRate = .25f;
-
-        print("hasTarget: " + hasTarget);
+               
             while (hasTarget){
-            print("currentState: " + currentState);
+            
             if (currentState == State.Chasing){
-                    Vector3 dirToTarget = (target.position - transform.position).normalized;
-                    Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
+                  
                 //Vector3 targetPosition = new Vector3(target.position.x, 0, target.position.z);
 
                 float elapsedTime = 0;
                
-                while (elapsedTime < moveDuration)
+                while (elapsedTime <= moveDuration)
                 {
+                    
+                    Vector3 dirToTarget = (target.position - transform.position).normalized;
+                    Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold / 2);
                     if (!dead)
                     {
-                        pathFinder.SetDestination(target.position);
+                        pathFinder.SetDestination(targetPosition);
                     }
 
-                    elapsedTime += Time.deltaTime;
+                    elapsedTime ++;
+
+                   yield return new WaitForSeconds(refreshRate);
                 }
-                    
-                }
+                
+            }
 
 
             hasTarget = false;
             currentState = State.Idle;
 
-            yield return new WaitForSeconds(refreshRate);
+            
         }
         }
 
