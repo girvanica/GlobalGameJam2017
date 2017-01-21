@@ -9,6 +9,8 @@ public class Player : LivingEntity {
     public float pulseCooldown = 5;
     public float nextPulseAvailableTime;
 
+    public bool  NoInput = false;
+
     PlayerController controller;
 
     public event System.Action OnDeath;
@@ -23,8 +25,13 @@ public class Player : LivingEntity {
 	
 	// Update is called once per frame
 	void Update () {
+        if (NoInput)
+        {
+            return;
+        }
+
         //Movement Input
-        bool rotate = false;
+            bool rotate = false;
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
             rotate = true;
@@ -42,5 +49,16 @@ public class Player : LivingEntity {
                 print("Pulse");
             }
         }
+    }
+
+    public void Goto(Vector3 pos)
+    {
+        NoInput = true;
+        controller.Move(Vector3.zero, false);
+        controller.MovePos(pos);
+    }
+
+    public void Standing() {
+        NoInput = false;
     }
 }
