@@ -46,7 +46,11 @@ public class Player : LivingEntity {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
+                triggerPulse();
                 print("Pulse");
+                // Play pulse
+                var audioClip = Resources.Load<AudioClip>("ed_pulse_2");
+                AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
             }
         }
     }
@@ -60,5 +64,13 @@ public class Player : LivingEntity {
 
     public void Standing() {
         NoInput = false;
+    }
+
+    public void triggerPulse()
+    {
+        if (OnTriggerPulse != null)
+        {
+            OnTriggerPulse();
+        }
     }
 }
