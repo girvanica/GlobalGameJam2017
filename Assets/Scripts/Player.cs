@@ -47,6 +47,9 @@ public class Player : LivingEntity {
             {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
                 print("Pulse");
+                // Play pulse
+                var audioClip = Resources.Load<AudioClip>("ed_pulse_2");
+                AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
             }
         }
     }
