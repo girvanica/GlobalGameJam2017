@@ -27,12 +27,12 @@ public class Enemy : LivingEntity
 
     bool hasTarget;
     public bool HasStopped = false;
+    bool doUpdate = true;
 
     // Use this for initialization
     protected override void Start()
     {
         base.Start();
-        pathFinder = GetComponent<NavMeshAgent>();
 
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
@@ -84,7 +84,9 @@ public class Enemy : LivingEntity
     // Update is called once per frame
     void Update()
     {
-
+        if (!doUpdate)
+            return;
+        pathFinder = GetComponent<NavMeshAgent>();
         if (target != null)
         {
             StartCoroutine(updatePath());
@@ -99,8 +101,11 @@ public class Enemy : LivingEntity
                 }
             }
         }
+    }
 
-
+    void OnDisable()
+    {
+        doUpdate = false;
     }
 
     IEnumerator attack()
@@ -126,13 +131,15 @@ public class Enemy : LivingEntity
             percent += Time.deltaTime * attackSpeed;
             float interpolation = (-Mathf.Pow(percent, 2) + percent) * 4;
             transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
-            yield return null;
+            
             if (HasStopped)
             {
                 this.StopAllCoroutines();
             }
             currentState = State.Chasing;
             pathFinder.enabled = true;
+
+            yield return null;
         }
 
     }
