@@ -55,8 +55,8 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
 		healthSlider.value = health;
 
-        print("Hit Taken");
-        print("Health: " + health);
+        //print("Hit Taken");
+        //print("Health: " + health);
         if (health <= 0 && !dead)
         {
             Die();

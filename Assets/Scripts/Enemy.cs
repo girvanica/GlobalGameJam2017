@@ -118,17 +118,13 @@ public class Enemy : LivingEntity
         bool hasAppliedDamage = false;
         while (percent <= 1)
         {
-
             if (percent >= .5f && !hasAppliedDamage)
             {
                 hasAppliedDamage = true;
                 targetEntity.TakeDamage(damage);
             }
             percent += Time.deltaTime * attackSpeed;
-
             float interpolation = (-Mathf.Pow(percent, 2) + percent) * 4;
-
-
             transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
             yield return null;
             if (HasStopped)
@@ -137,7 +133,6 @@ public class Enemy : LivingEntity
             }
             currentState = State.Chasing;
             pathFinder.enabled = true;
-
         }
 
     }
@@ -159,8 +154,8 @@ public class Enemy : LivingEntity
                     if (!dead)
                     {
                         pathFinder.SetDestination(targetPosition);
+                        yield return new WaitForSeconds(refreshRate);
                     }
-                    yield return new WaitForSeconds(refreshRate);
                 }
             }
             if (currentState == State.Baited)
@@ -175,7 +170,4 @@ public class Enemy : LivingEntity
             currentState = State.Idle;
         }
     }
-
 }
-
-

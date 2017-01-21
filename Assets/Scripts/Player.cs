@@ -58,7 +58,7 @@ public class Player : LivingEntity {
                 var audioClip = Resources.Load<AudioClip>("ed_pulse_4c");
                 AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
                 triggerPulse();
-                print("Pulse");
+                //print("Pulse");
             }
         }
 
@@ -68,7 +68,7 @@ public class Player : LivingEntity {
             {
                 dropsLeft--;
                 triggerDrop();
-                print("Drop");
+                //print("Drop");
             }
         }
        
