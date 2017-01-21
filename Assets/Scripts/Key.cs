@@ -20,6 +20,9 @@ public class Key : MonoBehaviour {
     {
         if (col.gameObject.tag == "Player")
         {
+            // Play sound
+            var audioClip = Resources.Load<AudioClip>("ed_key");
+            AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
             NumberOfKeys++;
             Destroy(_key);
         }
