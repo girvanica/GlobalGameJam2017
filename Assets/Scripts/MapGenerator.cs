@@ -13,6 +13,8 @@ public class MapGenerator : MonoBehaviour {
 	Queue<Coord> shuffledQueue;
 
 	List<Coord> obstacles;
+	bool [,] obstacleMap;
+
 	Map currentMap;
 
 	void Start () {
@@ -58,7 +60,7 @@ public class MapGenerator : MonoBehaviour {
 	void GenerateObstacles() {
 
 		obstacles = new List<Coord> ();
-
+		obstacleMap = new bool[(int)currentMap.mapSize.x, (int)currentMap.mapSize.y];
 		string name = "obstacles";
 		if (transform.FindChild (name)) {
 			DestroyImmediate(transform.FindChild(name).gameObject);
@@ -87,7 +89,7 @@ public class MapGenerator : MonoBehaviour {
 
 				obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
 				obstacles.Add (coord);
-
+				this.obstacleMap [coord.x, coord.y] = true;
 			} else {
 				containsObstacle [coord.x, coord.y] = false;
 				currentObstacleCount--;
@@ -167,7 +169,7 @@ public class MapGenerator : MonoBehaviour {
 		public int seed = 10;
 		public float minObstacleHeight;
 		public float maxObstacleHeight;
-		public int tileSize = 10;
+		public int tileSize = 1;
 		[Range (0,1)]
 		public float outlinePercent = 0.05f;
 		public Coord spawnCoord;
