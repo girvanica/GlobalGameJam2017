@@ -24,7 +24,7 @@ public class FowScript : MonoBehaviour {
         if (_canBreath)
         {
             _FogRadius += 0.02f * signal;
-            if (_FogRadius < 7)
+            if (_FogRadius < 2)
             {
                 signal = 1.4f;
                 if (!_isPlaying)
@@ -35,7 +35,7 @@ public class FowScript : MonoBehaviour {
                         player.GetComponent<AudioSource>().Play();
                 }
             }
-            if (_FogRadius > 9.5)
+            if (_FogRadius > 4.5)
             {
                 signal = -1.5f;
 

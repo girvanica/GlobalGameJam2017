@@ -70,14 +70,14 @@ public class MapGenerator : MonoBehaviour {
 		Transform mapHolder = new GameObject (name).transform;
 		mapHolder.parent = transform;
 
-		for (int x = 0; x < currentMap.mapSize.x; x++) {
-			for (int y = 0; y < currentMap.mapSize.y; y++) {
-                Vector3 tilePosition = CoordToPosition (x, y);
-				Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
-				newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent) * currentMap.tileSize;
-				newTile.parent = mapHolder;
-			}
-		}
+		//for (int x = 0; x < currentMap.mapSize.x; x++) {
+		//	for (int y = 0; y < currentMap.mapSize.y; y++) {
+  //              Vector3 tilePosition = CoordToPosition (x, y);
+		//		Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
+		//		newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent) * currentMap.tileSize;
+		//		newTile.parent = mapHolder;
+		//	}
+		//}
 
 
 		GenerateObstacles ();

@@ -28,11 +28,13 @@ public class LivingEntity : MonoBehaviour, IDamageable
 	void Update() {
 		if (damaged) 
 		{
-			damageImage.color = flashColour;	
+            if (damageImage != null)
+			    damageImage.color = flashColour;	
 		} 
 		else
 		{
-			damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
+            if (damageImage != null)
+                damageImage.color = Color.Lerp (damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
 		}
 		damaged = false;
 	}
@@ -53,7 +55,8 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
         health -= damage;
 
-		healthSlider.value = health;
+        if (healthSlider != null)
+            healthSlider.value = health;
 
         //print("Hit Taken");
         //print("Health: " + health);

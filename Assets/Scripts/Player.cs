@@ -58,7 +58,8 @@ public class Player : LivingEntity {
                 AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
                 triggerPulse();
                 //print("Pulse");
-				pulseSlider.value = 0;
+                if (pulseSlider != null)
+				    pulseSlider.value = 0;
 				AnimatePulseUISlider (pulseCooldown);
             }
         }
