@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerKey : MonoBehaviour {
+public class Key : MonoBehaviour {
 
     public int NumberOfKeys = 0;
-    GameObject _player = GameObject.Find("Player");
+    GameObject _key;
 
     // Use this for initialization
     void Start () {
-		
-	}
+        _key = GameObject.FindGameObjectWithTag("Key");
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -18,10 +18,10 @@ public class PlayerKey : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.name == "Key")
+        if (col.gameObject.tag == "Player")
         {
             NumberOfKeys++;
-            Destroy(col.gameObject);
+            Destroy(_key);
         }
     }
 }
