@@ -16,7 +16,7 @@ public class Player : LivingEntity {
     public event System.Action OnDeath;
     public event System.Action OnTriggerPulse;
     // Use this for initialization
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         controller = GetComponent<PlayerController>();

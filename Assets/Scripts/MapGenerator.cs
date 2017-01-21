@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Enemy))]
 public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
