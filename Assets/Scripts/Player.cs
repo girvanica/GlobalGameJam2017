@@ -46,6 +46,7 @@ public class Player : LivingEntity {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
+                triggerPulse();
                 print("Pulse");
             }
         }
@@ -60,5 +61,13 @@ public class Player : LivingEntity {
 
     public void Standing() {
         NoInput = false;
+    }
+
+    public void triggerPulse()
+    {
+        if (OnTriggerPulse != null)
+        {
+            OnTriggerPulse();
+        }
     }
 }
