@@ -14,13 +14,13 @@ public class PlayerController : MonoBehaviour {
     public float ZCameraOffset;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
         rig = GetComponent<Rigidbody>();
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+
+    // Update is called once per frame
+    void FixedUpdate() {
         rig.MovePosition(rig.position + vel * Time.fixedDeltaTime);
         //Keep CAmera Centerd on Player.
         mainCamera.transform.position = new Vector3(rig.position.x, rig.position.y + ZCameraOffset, rig.position.z - YCameraOffset);
@@ -29,11 +29,15 @@ public class PlayerController : MonoBehaviour {
 
     public void Move(Vector3 _vel, bool rotate) {
         vel = _vel;
-        if(rotate)
+        if (rotate)
         {
             lookDirection = -vel;
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+
+    public void MovePos(Vector3 pos) {
+        rig.MovePosition(pos + vel * Time.fixedDeltaTime);
     }
 }
