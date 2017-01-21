@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour {
 
     Rigidbody rig;
     Vector3 vel;
+    Vector3 lookDirection = Vector3.zero;
+    public float rotationSpeed = 7;
 
 	// Use this for initialization
 	void Start () {
@@ -16,9 +18,16 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         rig.MovePosition(rig.position + vel * Time.fixedDeltaTime);
-	}
+        //Look in the direction player is moving.
+    }
 
-    public void Move(Vector3 _vel) {
+    public void Move(Vector3 _vel, bool rotate) {
         vel = _vel;
+        if(rotate)
+        {
+            lookDirection = -vel;
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 }
