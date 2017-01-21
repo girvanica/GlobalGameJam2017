@@ -18,7 +18,7 @@ public class FowScript : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        var player = GameObject.Find("Player");
+        var player = GameObject.FindGameObjectWithTag("Player");
         UpdateMaterial(player);
         if (_canBreath)
         {
