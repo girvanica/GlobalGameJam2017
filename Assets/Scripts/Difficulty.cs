@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class Difficulty : MonoBehaviour {
 
-	public int difficulty;
-
 	public Canvas difficultyCanvas;
 	public Button calmButton;
 	public Button sadButton;
@@ -30,21 +28,17 @@ public class Difficulty : MonoBehaviour {
 	}
 
 	void CalmButtonClicked(){
-		difficulty = 0;
+		PlayerPrefs.SetInt ("Difficulty", 0);
 		SceneManager.LoadScene ("Level1");
 	}
 
 	void SadButtonClicked(){
-		difficulty = 1;
+		PlayerPrefs.SetInt ("Difficulty", 1);
 		SceneManager.LoadScene ("Level1");
 	}
 
 	void ExistentialDespairButtonButtonClicked(){
-		difficulty = 2;
+		PlayerPrefs.SetInt ("Difficulty", 2);
 		SceneManager.LoadScene ("Level1");
-	}
-
-	public int GetCurrentDifficulty(){
-		return difficulty;
 	}
 }
