@@ -33,6 +33,7 @@ public class FowScript : MonoBehaviour {
         if (player != null)
         {
             UpdateMaterial(player);
+			pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
         }
 
 		bool startAudio = false;
