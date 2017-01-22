@@ -31,9 +31,12 @@ public class Platform : MonoBehaviour
             else
             {
                 _startAnimation = false;
+                var mapGen = GameObject.FindGameObjectWithTag("MapGenerator").GetComponent<MapGenerator>() as MapGenerator;
+                mapGen.GenerateMap();
             }
         }
     }
+
 
     void OnCollisionEnter(Collision col)
     {
