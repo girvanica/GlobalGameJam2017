@@ -18,7 +18,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     public event System.Action OnDeath;
 
-
     protected virtual void Start()
     {
 
@@ -62,6 +61,29 @@ public class LivingEntity : MonoBehaviour, IDamageable
         if (health <= 0 && !dead)
         {
             Die();
+        }
+
+        if (((health / startingHealth) < 0.7) && (((health + damage) / startingHealth) >= 0.7))
+        {
+            ChangePlayerSound("breathing4");
+        }
+
+        if (((health / startingHealth) < 0.4) && (((health + damage) / startingHealth) >= 0.4))
+        {
+            ChangePlayerSound("breathing5");
+        }
+    }
+
+
+    protected void ChangePlayerSound(string clipName)
+    {
+        var breathe = Resources.Load<AudioClip>(clipName);
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<AudioSource>().clip = breathe;
+            player.GetComponent<AudioSource>().loop = true;
+            player.GetComponent<AudioSource>().Play();
         }
     }
 

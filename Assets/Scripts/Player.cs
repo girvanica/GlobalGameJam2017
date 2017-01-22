@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,9 +24,12 @@ public class Player : LivingEntity {
     public Slider pulseSlider;
     bool pulseAnim = false;
     float pulseAnimTime;
-
     public Vector3 dropLocation;
 
+    public Transform Decoy;
+
+    public bool hasKey = false;
+    Key key;
     // Use this for initialization
     protected override void Start()
     {
@@ -37,10 +41,18 @@ public class Player : LivingEntity {
 
         health = startingHealth;
         healthSlider = GameObject.FindGameObjectWithTag("HealthSlider").GetComponent<Slider>();
+
+        key = GameObject.FindGameObjectWithTag("Key").transform.GetComponent<Key>();
+        key.OnKeyPickup += OnKeyPickup;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void OnKeyPickup()
+    {
+        hasKey = true;
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (NoInput)
         {
             return;
@@ -57,7 +69,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetAxisRaw("Jump") != 0)
+        if (Input.GetButtonDown("Jump"))
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
@@ -84,7 +96,13 @@ public class Player : LivingEntity {
                 pulseAnim = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetButtonDown("Cancel"))
+        {
+            //TODO: Display pause menu
+        }
+
+
+        if (Input.GetButtonDown("Fire3"))
         {
             if (dropsLeft > 0)
             {
@@ -126,6 +144,7 @@ public class Player : LivingEntity {
             if (GameObject.FindGameObjectWithTag("Player") != null)
             {                
                 dropLocation = GameObject.FindGameObjectWithTag("Player").transform.position;
+                Instantiate(Decoy, dropLocation, Quaternion.identity);
             }
             OnTriggerDrop();
         }
