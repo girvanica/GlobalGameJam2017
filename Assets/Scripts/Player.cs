@@ -30,6 +30,9 @@ public class Player : LivingEntity {
 
     public bool hasKey = false;
     Key key;
+
+    GameObject pauseObject;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -44,6 +47,9 @@ public class Player : LivingEntity {
 
         key = GameObject.FindGameObjectWithTag("Key").transform.GetComponent<Key>();
         key.OnKeyPickup += OnKeyPickup;
+
+        pauseObject = GameObject.FindGameObjectWithTag("ShowOnPaused");
+        pauseObject.SetActive(false);
     }
 
     private void OnKeyPickup()
@@ -69,7 +75,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && pulseSlider.value == 100)
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
@@ -83,7 +89,6 @@ public class Player : LivingEntity {
 				    pulseSlider.value = 0;
                 pulseAnim = true;
                 pulseAnimTime = Time.realtimeSinceStartup;
-                AnimatePulseUISlider (pulseCooldown);
             }
         }
 
@@ -98,7 +103,16 @@ public class Player : LivingEntity {
 
         if (Input.GetButtonDown("Cancel"))
         {
-            //TODO: Display pause menu
+            if (Time.timeScale == 1)
+            {
+                Time.timeScale = 0;
+                pauseObject.SetActive(true);
+            }
+            else
+            {
+                Time.timeScale = 1;
+                pauseObject.SetActive(false);
+            }
         }
 
 
@@ -112,10 +126,6 @@ public class Player : LivingEntity {
             }
         }
     }
-
-	public void AnimatePulseUISlider(float pulseCooldown) {
-		
-	}
 
     public void Goto(Vector3 pos)
     {
