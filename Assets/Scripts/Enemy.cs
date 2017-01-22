@@ -14,6 +14,7 @@ public class Enemy : LivingEntity
     Transform target;
     LivingEntity targetEntity;
     Player targetPlayer;
+    GameObject _player;
 
     float attackDistanceThreshold = .5f;
     float timeBetweenAttacks = 1;
@@ -34,9 +35,11 @@ public class Enemy : LivingEntity
     {
         base.Start();
 
-        if (GameObject.FindGameObjectWithTag("Player") != null)
+        _player = GameObject.FindGameObjectWithTag("Player");
+
+        if (_player != null)
         {
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+            target = _player.transform;
             targetEntity = target.GetComponent<LivingEntity>();
             targetEntity.OnDeath += OnTargetDeath;
 
@@ -86,6 +89,13 @@ public class Enemy : LivingEntity
         if (!doUpdate)
             return;
         pathFinder = GetComponent<NavMeshAgent>();
+
+        if (this.currentState == State.Idle)
+        {
+            if ((this.transform.position - _player.transform.position).sqrMagnitude < 30)
+                OnTargetPulse();
+        }
+
         if (target != null)
         {
             StartCoroutine(updatePath());
