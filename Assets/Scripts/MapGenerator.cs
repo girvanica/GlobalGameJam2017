@@ -8,7 +8,8 @@ public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
 	public Transform obstaclePrefab;
-	public Transform navMeshFloor;
+	public Transform platformPrefab;
+    public Transform navMeshFloor;
 
     public Map [] maps;
 	public int currentMapIndex;
@@ -120,19 +121,19 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
-        // Spawn Platform
-        //while (true)
-        //{
-        //    Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
-        //    if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
-        //    {
-        //        if (!obstacles.Contains(randomCoord))
-        //        {
-        //            Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
-        //            break;
-        //        }
-        //    }
-        //}
+        //Spawn Platform
+        while (true)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            {
+                if (!obstacles.Contains(randomCoord))
+                {
+                    Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 0), Quaternion.identity);
+                    break;
+                }
+            }
+        }
     }
 
     void GenerateObstacles() {
@@ -278,6 +279,7 @@ public class MapGenerator : MonoBehaviour {
 		public Coord spawnCoord;
         public int minDistanceToPlayer = 10;
         public int Enemies = 4;
+        public int minPlatformDistance = 10;
 
 		public Map() {
 
