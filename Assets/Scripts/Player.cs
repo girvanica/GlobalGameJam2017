@@ -55,7 +55,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown("Jump"))
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
@@ -80,10 +80,16 @@ public class Player : LivingEntity {
 
             if (pulseSlider.value == 100)
                 pulseAnim = false;
-        }
+        }      
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetButtonDown("Cancel"))
         {
+            //TODO: Display pause menu
+        }
+        
+
+        if (Input.GetButtonDown("Fire3"))
+        {            
             if (dropsLeft > 0)
             {
                 dropsLeft--;
