@@ -18,7 +18,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     public event System.Action OnDeath;
 
-
     protected virtual void Start()
     {
 

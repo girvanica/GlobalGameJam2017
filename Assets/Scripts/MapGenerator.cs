@@ -8,7 +8,8 @@ public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
 	public Transform obstaclePrefab;
-	public Transform navMeshFloor;
+	public Transform platformPrefab;
+    public Transform navMeshFloor;
 
     public Map [] maps;
 	public int currentMapIndex;
@@ -120,19 +121,19 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
-        // Spawn Platform
-        //while (true)
-        //{
-        //    Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
-        //    if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
-        //    {
-        //        if (!obstacles.Contains(randomCoord))
-        //        {
-        //            Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
-        //            break;
-        //        }
-        //    }
-        //}
+        //Spawn Platform
+        while (true)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            {
+                if (!obstacles.Contains(randomCoord))
+                {
+                    Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 0), Quaternion.identity);
+                    break;
+                }
+            }
+        }
     }
 
     void GenerateObstacles() {
@@ -190,9 +191,9 @@ public class MapGenerator : MonoBehaviour {
 		wallHolder.parent = transform;
 
 		float height = (currentMap.maxObstacleHeight + currentMap.minObstacleHeight) / 2;
-		for (int x = 0; x < currentMap.mapSize.x+1; x++) {
-			for (int y = 0; y < currentMap.mapSize.y+1; y++) {
-				if (x == 0 || x == currentMap.mapSize.x || y == 0 || y == currentMap.mapSize.y ) {
+		for (int x = 0; x < currentMap.mapSize.x+2; x++) {
+			for (int y = 0; y < currentMap.mapSize.y+2; y++) {
+				if (x == 0 || x == currentMap.mapSize.x +1|| y == 0 || y == currentMap.mapSize.y +1) {
 					Vector3 vec3 = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, 0, -currentMap.mapSize.y/2 + 0.5f + y);
 					Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * height/2), Quaternion.identity) as Transform;
 					obstacle.parent = wallHolder;
@@ -278,6 +279,7 @@ public class MapGenerator : MonoBehaviour {
 		public Coord spawnCoord;
         public int minDistanceToPlayer = 10;
         public int Enemies = 4;
+        public int minPlatformDistance = 10;
 
 		public Map() {
 

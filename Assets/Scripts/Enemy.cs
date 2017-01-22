@@ -56,8 +56,6 @@ public class Enemy : LivingEntity
 
     }
 
-
-
     void OnTargetDeath()
     {
         hasTarget = false;
@@ -132,7 +130,7 @@ public class Enemy : LivingEntity
             percent += Time.deltaTime * attackSpeed;
             float interpolation = (-Mathf.Pow(percent, 2) + percent) * 4;
             transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
-            
+
             if (HasStopped)
             {
                 this.StopAllCoroutines();
@@ -142,9 +140,7 @@ public class Enemy : LivingEntity
 
             yield return null;
         }
-
     }
-
 
     IEnumerator updatePath()
     {
