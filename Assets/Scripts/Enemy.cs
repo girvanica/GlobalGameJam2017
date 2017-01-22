@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : LivingEntity
@@ -32,6 +33,10 @@ public class Enemy : LivingEntity
 
     public float decoyRadius = 25.0f;
     public float pulseRadius = 30.0f;
+
+    float timeOnDeadScreen;
+    bool playerIsDead = false;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -55,8 +60,6 @@ public class Enemy : LivingEntity
 
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
-
-
         }
 
         damage = 10 * PlayerPrefs.GetInt("Difficulty");
@@ -116,7 +119,18 @@ public class Enemy : LivingEntity
         }
         else
         {
-            StopAllCoroutines();
+            if (!playerIsDead)
+            {
+                StopAllCoroutines();
+
+                playerIsDead = true;
+                timeOnDeadScreen = Time.realtimeSinceStartup;
+            }
+
+            if (Time.realtimeSinceStartup - timeOnDeadScreen > 3)
+            {
+                SceneManager.LoadScene("Menu");
+            }
         }
 
         if (target != null)

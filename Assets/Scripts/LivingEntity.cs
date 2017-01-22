@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LivingEntity : MonoBehaviour, IDamageable
 {
@@ -18,13 +19,15 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     public event System.Action OnDeath;
 
+    GameObject diedObject;
+
     protected virtual void Start()
     {
-
+        diedObject = GameObject.FindGameObjectWithTag("ShowOnDeath");
     }
 
 	void Update() {
-		if (damaged) 
+        if (damaged) 
 		{
             if (damageImage != null)
 			    damageImage.color = flashColour;	
@@ -38,7 +41,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
 	}
 
 	public void TakeHit(float damage, RaycastHit hit)
-
     {
         TakeDamage(damage);
     }
@@ -94,7 +96,10 @@ public class LivingEntity : MonoBehaviour, IDamageable
         var audioClip = Resources.Load<AudioClip>("ed_hero_death");
         AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
         dead = true;
-        if(OnDeath != null)
+
+        diedObject.SetActive(true);
+
+        if (OnDeath != null)
         {
             OnDeath();
         }

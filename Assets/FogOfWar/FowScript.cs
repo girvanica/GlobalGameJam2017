@@ -30,7 +30,6 @@ public class FowScript : MonoBehaviour {
     void Update()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
 
         if (player != null)
         {

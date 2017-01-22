@@ -50,6 +50,9 @@ public class Player : LivingEntity {
 
         pauseObject = GameObject.FindGameObjectWithTag("ShowOnPaused");
         pauseObject.SetActive(false);
+
+        var diedObject = GameObject.FindGameObjectWithTag("ShowOnDeath");
+        diedObject.SetActive(false);
     }
 
     private void OnKeyPickup()
