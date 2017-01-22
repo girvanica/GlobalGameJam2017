@@ -8,9 +8,11 @@ public class Decoy : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        print(col.gameObject.tag);
         if (col.gameObject.tag == "Enemy")
         {
             // Play sound
+            print("col");
             TriggerDecoyPickUp();
             Destroy(gameObject);
         }

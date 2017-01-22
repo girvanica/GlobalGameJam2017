@@ -20,9 +20,11 @@ public class PlayerPulse : MonoBehaviour {
 	private float currentDistance;
 	private float currentRange;
 
+	//pulse is firing, light is growing
 	bool isPulsing;
+	//pulse is growing, light is fading 
 	bool isFading;
-
+	public bool isPulseFiring;
 	float fadeFrom;
 	float fadeTo;
 	public float fadeRate = 1f;
@@ -32,7 +34,7 @@ public class PlayerPulse : MonoBehaviour {
 	public float offset;
 	// Use this for initialization
 	void Start () {
-
+		isPulseFiring = false;
 		// Code to add a light source to the scene
 		lightGameObject = new GameObject("TheLight");
 		lightComp = lightGameObject.AddComponent<Light> ();
@@ -44,6 +46,7 @@ public class PlayerPulse : MonoBehaviour {
         // Play pulse
         //var audioClip = Resources.Load<AudioClip>("ed_pulse_2");
         //AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
+
     }
 	
 	// Update is called once per frame
@@ -53,9 +56,9 @@ public class PlayerPulse : MonoBehaviour {
 
 		if (Input.GetKeyUp ("space")) {
 			isPulsing = true;
-
+			isPulseFiring = true;
 			pulseStartTimeDelta = Time.deltaTime;
-			isPulsing = true;
+
 //			LightPulse ();
 		} else {
 //			isPulsing = false;
@@ -77,12 +80,12 @@ public class PlayerPulse : MonoBehaviour {
 		float rangeStep = currentRange;
 		if (isFading) {
 //			nextStep = Mathf.Lerp (currentIntensity, minLightIntensity, deltaFade);
-			nextStep = Approach (currentIntensity, minLightIntensity, deltaFade);
-			rangeStep = Approach (currentRange, 0, deltaFade);
+			nextStep = Utility.Approach (currentIntensity, minLightIntensity, deltaFade);
+			rangeStep = Utility.Approach (currentRange, 0, deltaFade);
 		} else {
 //			nextStep = Mathf.Lerp (currentIntensity, maxLightIntensity, deltaFade);
-			nextStep = Approach (currentIntensity, maxLightIntensity, deltaFade);
-			rangeStep = Approach (currentRange, lightRange, deltaFade);
+			nextStep = Utility.Approach (currentIntensity, maxLightIntensity, deltaFade);
+			rangeStep = Utility.Approach (currentRange, lightRange, deltaFade);
 		}
 
 		currentIntensity = nextStep;
@@ -99,7 +102,7 @@ public class PlayerPulse : MonoBehaviour {
 			isFading = false;
 			isPulsing = false;
 			lightComp.enabled = false;
-
+			isPulseFiring = false;
 		}
 //		if (isPulsing) {
 //			lightComp.enabled = true;
@@ -117,21 +120,11 @@ public class PlayerPulse : MonoBehaviour {
 //		}
 	}
 
-	float Approach (float fromValue, float toValue, float dt) {
+	public bool getIsPulsing() {
+		return isPulsing;
+	}
 
-		//get how much left
-		float diff = toValue - fromValue;
-
-		//we haven't reached it
-		if (diff > dt) {
-			return fromValue + dt;
-		} 
-
-		if (diff < -dt) {
-			return fromValue - dt;
-		}
-
-		return toValue;
-
+	public bool getIsFading() {
+		return isFading;
 	}
 }
