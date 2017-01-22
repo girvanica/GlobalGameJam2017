@@ -30,6 +30,8 @@ public class Player : LivingEntity {
 
     public bool hasKey = false;
     Key key;
+
+	GameObject[] pauseObjects;
     // Use this for initialization
     protected override void Start()
     {
@@ -44,7 +46,44 @@ public class Player : LivingEntity {
 
         key = GameObject.FindGameObjectWithTag("Key").transform.GetComponent<Key>();
         key.OnKeyPickup += OnKeyPickup;
+
+		Time.timeScale = 1;
+		pauseObjects = GameObject.FindGameObjectsWithTag("ShowOnPaused");
+		hidePaused();
     }
+
+	//shows objects with ShowOnPause tag
+	public void showPaused()
+	{
+		foreach (GameObject g in pauseObjects)
+		{
+			g.SetActive(true);
+		}
+	}
+
+	//hides objects with ShowOnPause tag
+	public void hidePaused()
+	{
+		foreach (GameObject g in pauseObjects)
+		{
+			g.SetActive(false);
+		}
+	}
+
+	//controls the pausing of the scene
+	public void pauseControl()
+	{
+		if (Time.timeScale == 1)
+		{
+			Time.timeScale = 0;
+			showPaused();
+		}
+		else if (Time.timeScale == 0)
+		{
+			Time.timeScale = 1;
+			hidePaused();
+		}
+	}
 
     private void OnKeyPickup()
     {
@@ -99,6 +138,17 @@ public class Player : LivingEntity {
         if (Input.GetButtonDown("Cancel"))
         {
             //TODO: Display pause menu
+			if(Time.timeScale == 1)
+			{
+				Time.timeScale = 0;
+				showPaused();
+			}
+			else if (Time.timeScale == 0)
+			{
+				//Debug.Log("high");
+				Time.timeScale = 1;
+				hidePaused();
+			}
         }
 
 

@@ -15,12 +15,15 @@ public class LivingEntity : MonoBehaviour, IDamageable
 	public float flashSpeed = 5f;
 	public Color flashColour = new Color(1f,0f,0f,0.1f);
 	bool damaged;
+	GameObject[] diedObjects;
+	public bool died;
 
     public event System.Action OnDeath;
 
     protected virtual void Start()
     {
-
+		
+		hideDied();
     }
 
 	void Update() {
@@ -94,10 +97,43 @@ public class LivingEntity : MonoBehaviour, IDamageable
         var audioClip = Resources.Load<AudioClip>("ed_hero_death");
         AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
         dead = true;
+		diedObjects = GameObject.FindGameObjectsWithTag("ShowOnDeath");
+		showDied();
         if(OnDeath != null)
         {
             OnDeath();
         }
         GameObject.Destroy(gameObject);
     }
+
+	public void showDied()
+	{
+		foreach (GameObject g in diedObjects)
+		{
+			g.SetActive(true);
+		}
+	}
+
+	public void hideDied()
+	{
+		foreach (GameObject g in diedObjects)
+		{
+			g.SetActive(false);
+		}
+	}
+
+	public void diedControl()
+	{
+		if (died)
+		{
+			Time.timeScale = 0;
+			showDied();
+		}
+		else
+		{
+			Time.timeScale = 1;
+			hideDied();
+		}
+
+	}
 }
