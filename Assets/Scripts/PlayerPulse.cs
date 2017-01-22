@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerPulse : MonoBehaviour {
 
@@ -53,8 +54,9 @@ public class PlayerPulse : MonoBehaviour {
 	void Update () {
 		// Sets the position of the generated light to the current player position
 		lightGameObject.transform.position = new Vector3 (this.transform.position.x, offset, this.transform.position.z);//this.transform.position;
+        var pulseSlider = GameObject.FindGameObjectWithTag("PulseSlider").GetComponent<Slider>();
 
-		if (Input.GetButtonDown("Jump")) {
+        if (Input.GetButtonDown("Jump") && pulseSlider.value == 100) {
 			isPulsing = true;
 			isPulseFiring = true;
 			pulseStartTimeDelta = Time.deltaTime;

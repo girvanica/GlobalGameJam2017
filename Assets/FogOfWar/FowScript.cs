@@ -23,13 +23,15 @@ public class FowScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        player = GameObject.FindGameObjectWithTag("Player");
-        pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+        pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
+
         if (player != null)
         {
             UpdateMaterial(player);
