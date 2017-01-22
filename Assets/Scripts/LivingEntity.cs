@@ -63,6 +63,35 @@ public class LivingEntity : MonoBehaviour, IDamageable
         {
             Die();
         }
+
+        if (((health / startingHealth) < 0.7) && (((health + damage) / startingHealth) >= 0.7))
+        {
+            // Update sound
+            print("Sound 4");
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                var breathe2 = Resources.Load<AudioClip>("breathing4");
+                player.GetComponent<AudioSource>().clip = breathe2;
+                player.GetComponent<AudioSource>().loop = true;
+                player.GetComponent<AudioSource>().Play();
+            }
+        }
+
+        if (((health / startingHealth) < 0.4) && (((health + damage) / startingHealth) >= 0.4))
+        {
+            // Update sound
+            print("Sound 5");
+
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                var breathe3 = Resources.Load<AudioClip>("breathing5");
+                player.GetComponent<AudioSource>().clip = breathe3;
+                player.GetComponent<AudioSource>().loop = true;
+                player.GetComponent<AudioSource>().Play();
+            }
+        }
     }
 
     protected void Die()
