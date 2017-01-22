@@ -8,6 +8,7 @@ public class Platform : MonoBehaviour
 
     bool _startAnimation;
     float _time;
+    float _riseTime = 3;
     GameObject _platform;
     public event System.Action OnEscape;
 
@@ -22,7 +23,7 @@ public class Platform : MonoBehaviour
     {
         if (_startAnimation)
         {
-            if (Time.timeSinceLevelLoad - _time < 3)
+            if (Time.timeSinceLevelLoad < _time)
             {
                 Vector3 pos = transform.position;
                 pos.y += Time.deltaTime;
@@ -44,7 +45,7 @@ public class Platform : MonoBehaviour
         {
             if (col.gameObject.GetComponent<Player>().hasKey)
             {
-                _time = Time.realtimeSinceStartup;
+                _time = Time.timeSinceLevelLoad + _riseTime;
                 _startAnimation = true;
                 col.gameObject.GetComponent<Player>().Goto(new Vector3(transform.position.x, col.gameObject.transform.position.y, transform.position.z));
                 var enemies = GameObject.FindObjectsOfType<Enemy>();
