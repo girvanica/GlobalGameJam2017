@@ -50,6 +50,12 @@ public class MapGenerator : MonoBehaviour {
         var destPlatform = GameObject.FindGameObjectWithTag("Platform");
         DestroyImmediate(destPlatform);
 
+        var decoys = GameObject.FindGameObjectsWithTag("Decoy");
+        //print(enemies.Length);
+        for (var i = 0; i < decoys.Length; i++)
+        {
+            DestroyImmediate(decoys[i]);
+        }
 
         currentMap = maps [currentMapIndex];
         currentMap.seed = r.Next(0, 1000);
