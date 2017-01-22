@@ -7,14 +7,16 @@ public class Key : MonoBehaviour {
 
     public int NumberOfKeys = 0;
     GameObject _key;
+    public event System.Action OnKeyPickup;
+
 
     // Use this for initialization
     void Start () {
         _key = GameObject.FindGameObjectWithTag("Key");
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
     }
 
     void OnCollisionEnter(Collision col)
@@ -27,6 +29,15 @@ public class Key : MonoBehaviour {
             NumberOfKeys++;
             GameObject.FindGameObjectWithTag("Orb").GetComponent<Image>().color = Color.white;
             Destroy(_key);
+            TriggerKeyPickUp();
+        }
+    }
+
+    void TriggerKeyPickUp()
+    {
+        if (OnKeyPickup != null)
+        {
+            OnKeyPickup();
         }
     }
 }
