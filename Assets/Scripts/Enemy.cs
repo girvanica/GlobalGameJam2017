@@ -17,8 +17,8 @@ public class Enemy : LivingEntity
 
     float attackDistanceThreshold = .5f;
     float timeBetweenAttacks = 1;
-    public float damage = 1;
-    public float moveDuration = 5;
+    public float damage;
+    public float moveDuration;
     float moveTime;
     float nextAttackTime;
 
@@ -69,6 +69,7 @@ public class Enemy : LivingEntity
     {
         hasTarget = true;
         currentState = State.Chasing;
+        print(moveDuration);
         moveTime = Time.timeSinceLevelLoad + moveDuration;
     }
 
@@ -164,6 +165,7 @@ public class Enemy : LivingEntity
                         yield return new WaitForSeconds(refreshRate);
                     }
                 }
+                pathFinder.SetDestination(transform.position);
             }
             if (currentState == State.Baited)
             {
