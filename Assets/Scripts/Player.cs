@@ -26,6 +26,8 @@ public class Player : LivingEntity {
     float pulseAnimTime;
     public Vector3 dropLocation;
 
+    public Transform Decoy;
+
     public bool hasKey = false;
     Key key;
     // Use this for initialization
@@ -142,6 +144,7 @@ public class Player : LivingEntity {
             if (GameObject.FindGameObjectWithTag("Player") != null)
             {                
                 dropLocation = GameObject.FindGameObjectWithTag("Player").transform.position;
+                Instantiate(Decoy, dropLocation, Quaternion.identity);
             }
             OnTriggerDrop();
         }
