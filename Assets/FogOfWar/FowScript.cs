@@ -18,18 +18,22 @@ public class FowScript : MonoBehaviour {
 	//pulse fired audio vars
 	bool isPulseBreathPlaying;
 
+    GameObject player;
+    PlayerPulse pulse;
+
     // Use this for initialization
     void Start () {
-	}
+        player = GameObject.FindGameObjectWithTag("Player");
+        pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-		var player = GameObject.FindGameObjectWithTag("Player");
-		PlayerPulse pulse = ((Player)player.GetComponent<Player>()).GetComponent<PlayerPulse>();
-
         if (player != null)
+        {
             UpdateMaterial(player);
+        }
 
 		bool startAudio = false;
         if (_canBreath)
