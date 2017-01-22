@@ -90,6 +90,12 @@ public class Enemy : LivingEntity
             return;
         pathFinder = GetComponent<NavMeshAgent>();
 
+        if (this.currentState == State.Chasing)
+        {
+            if ((this.transform.position - _player.transform.position).sqrMagnitude < 60)
+                this.currentState = State.Idle;
+        }
+
         if (this.currentState == State.Idle)
         {
             if ((this.transform.position - _player.transform.position).sqrMagnitude < 30)
