@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerController))]
 public class Player : LivingEntity {
@@ -20,6 +21,10 @@ public class Player : LivingEntity {
     public event System.Action OnTriggerPulse;
     public event System.Action OnTriggerDrop;
 
+    public Slider pulseSlider;
+    bool pulseAnim = false;
+    float pulseAnimTime;
+
     public Vector3 dropLocation;
     // Use this for initialization
     protected override void Start()
@@ -28,6 +33,8 @@ public class Player : LivingEntity {
         dropsLeft = maxDrops;
         controller = GetComponent<PlayerController>();
         nextPulseAvailableTime = Time.timeSinceLevelLoad;
+
+        pulseSlider = GameObject.FindGameObjectWithTag("PulseSlider").GetComponent<Slider>();
     }
 	
 	// Update is called once per frame
@@ -60,8 +67,19 @@ public class Player : LivingEntity {
                 //print("Pulse");
                 if (pulseSlider != null)
 				    pulseSlider.value = 0;
-				AnimatePulseUISlider (pulseCooldown);
+                pulseAnim = true;
+                pulseAnimTime = Time.realtimeSinceStartup;
+                AnimatePulseUISlider (pulseCooldown);
             }
+        }
+
+        if (pulseAnim && (pulseAnimTime < Time.realtimeSinceStartup + pulseCooldown))
+        {
+            if (pulseSlider != null)
+                pulseSlider.value += (1 * Time.deltaTime/ 5) * 100;
+
+            if (pulseSlider.value == 100)
+                pulseAnim = false;
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
