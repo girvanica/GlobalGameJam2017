@@ -6,7 +6,7 @@ public class FowScript : MonoBehaviour {
 
     public float _FogRadius = 11.0f;
     public float _FogMaxRadius = 1.0f;
-    float signal = -1.5f;
+    public float signal = -1.5f;
     bool _isPlaying = false;
     bool _canBreath = true;
     float _time;

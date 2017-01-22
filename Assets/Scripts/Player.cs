@@ -17,7 +17,6 @@ public class Player : LivingEntity {
 
     PlayerController controller;
 	public Animation anim;
-    public event System.Action OnDeath;
     public event System.Action OnTriggerPulse;
     public event System.Action OnTriggerDrop;
 
@@ -26,6 +25,7 @@ public class Player : LivingEntity {
     float pulseAnimTime;
 
     public Vector3 dropLocation;
+
     // Use this for initialization
     protected override void Start()
     {
@@ -33,8 +33,10 @@ public class Player : LivingEntity {
         dropsLeft = maxDrops;
         controller = GetComponent<PlayerController>();
         nextPulseAvailableTime = Time.timeSinceLevelLoad;
-
         pulseSlider = GameObject.FindGameObjectWithTag("PulseSlider").GetComponent<Slider>();
+
+        health = startingHealth;
+        healthSlider = GameObject.FindGameObjectWithTag("HealthSlider").GetComponent<Slider>();
     }
 	
 	// Update is called once per frame
@@ -55,7 +57,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetAxisRaw("Jump") != 0)
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
