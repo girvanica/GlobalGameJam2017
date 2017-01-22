@@ -78,7 +78,7 @@ public class Player : LivingEntity {
         if (pulseAnim && (pulseAnimTime < Time.realtimeSinceStartup + pulseCooldown))
         {
             if (pulseSlider != null)
-                pulseSlider.value += (1 * Time.deltaTime/ 5) * 100;
+                pulseSlider.value += (1 * Time.deltaTime/ 4) * 100;
 
             if (pulseSlider.value == 100)
                 pulseAnim = false;
