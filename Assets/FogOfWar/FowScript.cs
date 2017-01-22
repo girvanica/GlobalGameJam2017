@@ -53,7 +53,7 @@ public class FowScript : MonoBehaviour {
 				toValue = pulse.getIsFading () ? pulseMinRadius : pulseMaxRadius;
 
 				float nextStep = Utility.Approach (fromValue, toValue, pulseSignal);
-				Debug.Log ("next step is " + nextStep);
+				//Debug.Log ("next step is " + nextStep);
 				_FogRadius = nextStep;
 			} else {
 				_FogRadius += 0.02f * signal;
