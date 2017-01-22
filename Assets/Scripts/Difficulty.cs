@@ -42,17 +42,17 @@ public class Difficulty : MonoBehaviour {
     }
 
 	void CalmButtonClicked(){
-		PlayerPrefs.SetInt ("Difficulty", 0);
-		SceneManager.LoadScene ("Level1");
-	}
-
-	void SadButtonClicked(){
 		PlayerPrefs.SetInt ("Difficulty", 1);
 		SceneManager.LoadScene ("Level1");
 	}
 
-	void ExistentialDespairButtonButtonClicked(){
+	void SadButtonClicked(){
 		PlayerPrefs.SetInt ("Difficulty", 2);
+		SceneManager.LoadScene ("Level1");
+	}
+
+	void ExistentialDespairButtonButtonClicked(){
+		PlayerPrefs.SetInt ("Difficulty", 4);
 		SceneManager.LoadScene ("Level1");
 	}
 }
