@@ -70,6 +70,7 @@ public class Enemy : LivingEntity
     {
         hasTarget = true;
         currentState = State.Chasing;
+
         moveTime = Time.timeSinceLevelLoad + moveDuration;
     }
 
