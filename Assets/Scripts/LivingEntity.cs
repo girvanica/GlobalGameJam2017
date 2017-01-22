@@ -22,6 +22,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     protected virtual void Start()
     {
         health = startingHealth;
+        //print("health:" + health + " || " + startingHealth);
         healthSlider = GameObject.FindGameObjectWithTag("HealthSlider").GetComponent<Slider>();
     }
 
@@ -54,9 +55,9 @@ public class LivingEntity : MonoBehaviour, IDamageable
         damaged = true;
 
         health -= damage;
-
+        //print("health: " + health + " | " + startingHealth);
         if (healthSlider != null)
-            healthSlider.value = health;
+            healthSlider.value = 100 / startingHealth * health;
 
         //print("Hit Taken");
         //print("Health: " + health);
@@ -68,6 +69,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     protected void Die()
     {
+        healthSlider.value = 0;
         // Play sound
         var audioClip = Resources.Load<AudioClip>("ed_hero_death");
         AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
