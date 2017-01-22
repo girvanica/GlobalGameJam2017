@@ -125,7 +125,7 @@ public class MapGenerator : MonoBehaviour {
         while (true)
         {
             Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
-            if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+            if (Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y), CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minPlatformDistance)
             {
                 if (!obstacles.Contains(randomCoord))
                 {
