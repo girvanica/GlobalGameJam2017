@@ -95,13 +95,13 @@ public class Enemy : LivingEntity
         {
             if (this.currentState == State.Chasing)
             {
-                if ((this.transform.position - _player.transform.position).sqrMagnitude < 60)
+                if ((this.transform.position - _player.transform.position).sqrMagnitude < 40)
                     this.currentState = State.Idle;
             }
 
             if (this.currentState == State.Idle)
             {
-                if ((this.transform.position - _player.transform.position).sqrMagnitude < 30)
+                if ((this.transform.position - _player.transform.position).sqrMagnitude < 20)
                     OnTargetPulse();
             }
         }
