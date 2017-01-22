@@ -21,9 +21,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     protected virtual void Start()
     {
-        health = startingHealth;
-        //print("health:" + health + " || " + startingHealth);
-        healthSlider = GameObject.FindGameObjectWithTag("HealthSlider").GetComponent<Slider>();
+
     }
 
 	void Update() {
