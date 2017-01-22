@@ -54,7 +54,7 @@ public class PlayerPulse : MonoBehaviour {
 		// Sets the position of the generated light to the current player position
 		lightGameObject.transform.position = new Vector3 (this.transform.position.x, offset, this.transform.position.z);//this.transform.position;
 
-		if (Input.GetKeyUp ("space")) {
+		if (Input.GetButtonDown("Jump")) {
 			isPulsing = true;
 			isPulseFiring = true;
 			pulseStartTimeDelta = Time.deltaTime;
