@@ -46,7 +46,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         // Play sound
-        var audioClip = Resources.Load<AudioClip>("ed_enemy_hit");
+        var audioClip = Resources.Load<AudioClip>("ed_hero_hit");
         AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
 
         damaged = true;
@@ -91,7 +91,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     {
         healthSlider.value = 0;
         // Play sound
-        var audioClip = Resources.Load<AudioClip>("ed_hero_death");
+        var audioClip = Resources.Load<AudioClip>("ed_hero_death_ws");
         AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
         dead = true;
         if(OnDeath != null)
