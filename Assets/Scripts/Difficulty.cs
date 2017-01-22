@@ -6,15 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class Difficulty : MonoBehaviour {
 
-	public int difficulty;
-
 	public Canvas difficultyCanvas;
 	public Button calmButton;
 	public Button sadButton;
 	public Button existentialDespairButton;
+    bool controllerConnected;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 
 		difficultyCanvas = difficultyCanvas.GetComponent<Canvas> ();
 
@@ -27,24 +26,33 @@ public class Difficulty : MonoBehaviour {
 		existentialDespairButton = existentialDespairButton.GetComponent<Button> ();
 		existentialDespairButton.onClick.AddListener (ExistentialDespairButtonButtonClicked);
 
-	}
+        string[] names = Input.GetJoystickNames();
+
+        controllerConnected = false;
+
+        for (int x = 0; x < names.Length; x++)
+        {
+            if (names[x].ToUpper().Contains("XBOX"))
+            {
+                controllerConnected = true;
+                calmButton.Select();
+            }
+        }
+
+    }
 
 	void CalmButtonClicked(){
-		difficulty = 0;
+		PlayerPrefs.SetInt ("Difficulty", 0);
 		SceneManager.LoadScene ("Level1");
 	}
 
 	void SadButtonClicked(){
-		difficulty = 1;
+		PlayerPrefs.SetInt ("Difficulty", 1);
 		SceneManager.LoadScene ("Level1");
 	}
 
 	void ExistentialDespairButtonButtonClicked(){
-		difficulty = 2;
+		PlayerPrefs.SetInt ("Difficulty", 2);
 		SceneManager.LoadScene ("Level1");
-	}
-
-	public int GetCurrentDifficulty(){
-		return difficulty;
 	}
 }
