@@ -1,6 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerController))]
 public class Player : LivingEntity {
@@ -8,19 +9,34 @@ public class Player : LivingEntity {
     public float moveSpeed = 5;
     public float pulseCooldown = 5;
     public float nextPulseAvailableTime;
+    
+    public float maxDrops = 10;
+    protected float dropsLeft;
 
     public bool  NoInput = false;
 
     PlayerController controller;
-
-    public event System.Action OnDeath;
+	public Animation anim;
     public event System.Action OnTriggerPulse;
+    public event System.Action OnTriggerDrop;
+
+    public Slider pulseSlider;
+    bool pulseAnim = false;
+    float pulseAnimTime;
+
+    public Vector3 dropLocation;
+
     // Use this for initialization
     protected override void Start()
     {
         base.Start();
+        dropsLeft = maxDrops;
         controller = GetComponent<PlayerController>();
         nextPulseAvailableTime = Time.timeSinceLevelLoad;
+        pulseSlider = GameObject.FindGameObjectWithTag("PulseSlider").GetComponent<Slider>();
+
+        health = startingHealth;
+        healthSlider = GameObject.FindGameObjectWithTag("HealthSlider").GetComponent<Slider>();
     }
 	
 	// Update is called once per frame
@@ -41,15 +57,53 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetAxis("Jump") != 0)
+        if (Input.GetButtonDown("Jump"))
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
-                print("Pulse");
+                // Play pulse
+                var audioClip = Resources.Load<AudioClip>("ed_pulse_4c");
+                AudioSource.PlayClipAtPoint(audioClip, transform.position);
+                triggerPulse();
+                //print("Pulse");
+                if (pulseSlider != null)
+				    pulseSlider.value = 0;
+                pulseAnim = true;
+                pulseAnimTime = Time.realtimeSinceStartup;
+                AnimatePulseUISlider (pulseCooldown);
+            }
+        }
+
+        if (pulseAnim && (pulseAnimTime < Time.realtimeSinceStartup + pulseCooldown))
+        {
+            if (pulseSlider != null)
+                pulseSlider.value += (1 * Time.deltaTime/ 5) * 100;
+
+            if (pulseSlider.value == 100)
+                pulseAnim = false;
+        }
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            //TODO: Display pause menu
+        }
+
+
+        if (Input.GetButtonDown("Fire3"))
+        {
+            if (dropsLeft > 0)
+            {
+                dropsLeft--;
+                triggerDrop();
+                //print("Drop");
             }
         }
     }
+
+	public void AnimatePulseUISlider(float pulseCooldown) {
+		
+	}
 
     public void Goto(Vector3 pos)
     {
@@ -60,5 +114,26 @@ public class Player : LivingEntity {
 
     public void Standing() {
         NoInput = false;
+    }
+
+    public void triggerPulse()
+    {
+        if (OnTriggerPulse != null)
+        {
+            OnTriggerPulse();
+        }
+    }
+
+
+    public void triggerDrop()
+    {
+        if (OnTriggerDrop != null)
+        {
+            if (GameObject.FindGameObjectWithTag("Player") != null)
+            {                
+                dropLocation = GameObject.FindGameObjectWithTag("Player").transform.position;
+            }
+            OnTriggerDrop();
+        }
     }
 }

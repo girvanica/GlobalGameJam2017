@@ -40,8 +40,11 @@ public class PlayerPulse : MonoBehaviour {
 		lightComp.range = lightRange;
 
 		lightComp.enabled = isPulsing;
-		lightGameObject.transform.position = this.transform.position - (Vector3.up * offset);
-	}
+		lightGameObject.transform.position = this.transform.position;
+        // Play pulse
+        //var audioClip = Resources.Load<AudioClip>("ed_pulse_2");
+        //AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -96,6 +99,7 @@ public class PlayerPulse : MonoBehaviour {
 			isFading = false;
 			isPulsing = false;
 			lightComp.enabled = false;
+
 		}
 //		if (isPulsing) {
 //			lightComp.enabled = true;

@@ -2,35 +2,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Enemy))]
 public class MapGenerator : MonoBehaviour {
 
 	public Transform tilePrefab;
 	public Transform obstaclePrefab;
-	public Map [] maps;
+	public Transform navMeshFloor;
+
+    public Map [] maps;
 	public int currentMapIndex;
 	List<Coord> allTileCoords;
 	Queue<Coord> shuffledQueue;
-
 	List<Coord> obstacles;
 	bool [,] obstacleMap;
-
 	Map currentMap;
 
-	void Start () {
-		GenerateMap ();
-//		currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
+    public Enemy enemy;
+    public Player player;
+    public Key key;
+    public Platform platform;
+
+    void Start () {
+		//GenerateMap ();
+        //currentMap.spawnCoord = new Coord ((int)currentMap.spawnPoint.x, (int)currentMap.spawnPoint.y);
 	}
 
 	public void GenerateMap() {
-		currentMap = maps [currentMapIndex];
-		allTileCoords = new List<Coord> ();
+        System.Random r = new System.Random();
+
+        var destPlayer = GameObject.FindGameObjectWithTag("Player");
+        if(destPlayer != null)
+        {
+            DestroyImmediate(destPlayer);
+        }
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        //print(enemies.Length);
+        for (var i = 0; i < enemies.Length; i++)
+        {
+            DestroyImmediate(enemies[i]);
+        }
+
+        var destKey = GameObject.FindGameObjectWithTag("Key");
+        DestroyImmediate(destKey);
+
+        var destPlatform = GameObject.FindGameObjectWithTag("Platform");
+        DestroyImmediate(destPlatform);
+
+
+        currentMap = maps [currentMapIndex];
+        currentMap.seed = r.Next(0, 1000);
+        allTileCoords = new List<Coord> ();
 		for (int x = 0; x < currentMap.mapSize.x; x++) {
 			for (int y = 0; y < currentMap.mapSize.y; y++) {
 				allTileCoords.Add(new Coord(x, y));
 			}
 		}
 		shuffledQueue = new Queue<Coord> (Utility.ShuffleArray (allTileCoords.ToArray (), currentMap.seed));
-
 
 		string name = "map";
 		if (transform.FindChild (name)) {
@@ -42,21 +70,72 @@ public class MapGenerator : MonoBehaviour {
 		Transform mapHolder = new GameObject (name).transform;
 		mapHolder.parent = transform;
 
-		for (int x = 0; x < currentMap.mapSize.x; x++) {
-			for (int y = 0; y < currentMap.mapSize.y; y++) {
-				Vector3 tilePosition = CoordToPosition (x, y);
-				Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
-				newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent);
-				newTile.parent = mapHolder;
-			}
-		}
+		//for (int x = 0; x < currentMap.mapSize.x; x++) {
+		//	for (int y = 0; y < currentMap.mapSize.y; y++) {
+  //              Vector3 tilePosition = CoordToPosition (x, y);
+		//		Transform newTile = Instantiate (tilePrefab, tilePosition, Quaternion.Euler (Vector3.right * 90));
+		//		newTile.localScale = Vector3.one * (1 - currentMap.outlinePercent) * currentMap.tileSize;
+		//		newTile.parent = mapHolder;
+		//	}
+		//}
 
 
 		GenerateObstacles ();
+		GenerateExternalWalls ();
 
-	}
+        navMeshFloor.localScale = new Vector3(currentMap.mapSize.x, currentMap.mapSize.y) * currentMap.tileSize;
 
-	void GenerateObstacles() {
+        //Spawn Enemies
+        int numEnemies = currentMap.Enemies;
+        
+        while (numEnemies > 0)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if(Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y),CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minDistanceToPlayer)
+            {
+                //print("Distance Ok");
+                if (!obstacles.Contains(randomCoord))
+                {
+                    //Spawn Enemy
+                    //print("Spawn " + randomCoord.x + " " + randomCoord.y);
+
+                    Enemy spawnedEnemy = Instantiate(enemy, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity) as Enemy;
+                    numEnemies--;
+                }
+            }
+        }
+        Player spawnedPlayer = Instantiate(player, CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y, 1), Quaternion.identity) as Player;
+
+        // Spawn Key
+        while (true)
+        {
+            Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+            if (Vector3.Distance(CoordToPosition(randomCoord.x, randomCoord.y), CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y)) > currentMap.minDistanceToPlayer)
+            {
+                if (!obstacles.Contains(randomCoord))
+                {
+                    Instantiate(key, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
+                    break;
+                }
+            }
+        }
+
+        // Spawn Platform
+        //while (true)
+        //{
+        //    Coord randomCoord = new Coord(r.Next(0, currentMap.mapSize.x), r.Next(0, currentMap.mapSize.y));
+        //    if (Utility.DistanceBetweenCoords(currentMap.spawnCoord.x, currentMap.spawnCoord.y, randomCoord.x, randomCoord.y, currentMap.minDistanceToPlayer))
+        //    {
+        //        if (!obstacles.Contains(randomCoord))
+        //        {
+        //            Instantiate(platform, CoordToPosition(randomCoord.x, randomCoord.y, 1), Quaternion.identity);
+        //            break;
+        //        }
+        //    }
+        //}
+    }
+
+    void GenerateObstacles() {
 
 		obstacles = new List<Coord> ();
 		obstacleMap = new bool[(int)currentMap.mapSize.x, (int)currentMap.mapSize.y];
@@ -86,8 +165,9 @@ public class MapGenerator : MonoBehaviour {
 				Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * height/2), Quaternion.identity) as Transform;
 				obstacle.parent = obstacleHolder;
 
-				obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
-				obstacles.Add (coord);
+                obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
+
+                obstacles.Add (coord);
 				this.obstacleMap [coord.x, coord.y] = true;
 			} else {
 				containsObstacle [coord.x, coord.y] = false;
@@ -99,8 +179,32 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
-	Vector3 CoordToPosition(int x, int y) {
-		Vector3 tilePosition = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, 0, -currentMap.mapSize.y/2 + 0.5f + y);
+	void GenerateExternalWalls() {
+
+		string name = "external walls";
+		if (transform.FindChild (name)) {
+			DestroyImmediate(transform.FindChild(name).gameObject);
+		}
+
+		Transform wallHolder = new GameObject (name).transform;
+		wallHolder.parent = transform;
+
+		float height = (currentMap.maxObstacleHeight + currentMap.minObstacleHeight) / 2;
+		for (int x = 0; x < currentMap.mapSize.x+2; x++) {
+			for (int y = 0; y < currentMap.mapSize.y+2; y++) {
+				if (x == 0 || x == currentMap.mapSize.x +1|| y == 0 || y == currentMap.mapSize.y +1) {
+					Vector3 vec3 = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, 0, -currentMap.mapSize.y/2 + 0.5f + y);
+					Transform obstacle = Instantiate (obstaclePrefab, vec3 + (Vector3.up * height/2), Quaternion.identity) as Transform;
+					obstacle.parent = wallHolder;
+
+					obstacle.localScale = new Vector3 (((1 - currentMap.outlinePercent) * currentMap.tileSize), height, ((1 - currentMap.outlinePercent) * currentMap.tileSize));
+				}
+			}
+		}
+	}
+
+	Vector3 CoordToPosition(int x, int y, int yOffset = 0) {
+		Vector3 tilePosition = new Vector3 (-currentMap.mapSize.x/2 + 0.5f + x, yOffset, -currentMap.mapSize.y/2 + 0.5f + y);
 		return tilePosition;
 	}
 		
@@ -168,10 +272,12 @@ public class MapGenerator : MonoBehaviour {
 		public int seed = 10;
 		public float minObstacleHeight;
 		public float maxObstacleHeight;
-		public int tileSize = 1;
+		public float tileSize = 1;
 		[Range (0,1)]
 		public float outlinePercent = 0.05f;
 		public Coord spawnCoord;
+        public int minDistanceToPlayer = 10;
+        public int Enemies = 4;
 
 		public Map() {
 

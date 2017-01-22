@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 01291f6e4a7a344799575b5cacd3455f
+timeCreated: 1485004476
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Exquisite Corpse
+  fontNames:
+  - Exquisite Corpse
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
