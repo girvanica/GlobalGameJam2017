@@ -57,6 +57,7 @@ public class Enemy : LivingEntity
 
         }
 
+        damage = 10 * PlayerPrefs.GetInt("Difficulty");
     }
 
     void OnTargetDeath()
@@ -90,16 +91,23 @@ public class Enemy : LivingEntity
             return;
         pathFinder = GetComponent<NavMeshAgent>();
 
-        if (this.currentState == State.Chasing)
+        if (_player != null)
         {
-            if ((this.transform.position - _player.transform.position).sqrMagnitude < 60)
-                this.currentState = State.Idle;
-        }
+            if (this.currentState == State.Chasing)
+            {
+                if ((this.transform.position - _player.transform.position).sqrMagnitude < 60)
+                    this.currentState = State.Idle;
+            }
 
-        if (this.currentState == State.Idle)
+            if (this.currentState == State.Idle)
+            {
+                if ((this.transform.position - _player.transform.position).sqrMagnitude < 30)
+                    OnTargetPulse();
+            }
+        }
+        else
         {
-            if ((this.transform.position - _player.transform.position).sqrMagnitude < 30)
-                OnTargetPulse();
+            StopAllCoroutines();
         }
 
         if (target != null)
@@ -162,9 +170,8 @@ public class Enemy : LivingEntity
     {
         float refreshRate = .25f;
 
-        while (hasTarget)
+        while (hasTarget && target != null && transform != null)
         {
-
             if (currentState == State.Chasing)
             {
                 while (Time.timeSinceLevelLoad < moveTime)
