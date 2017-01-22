@@ -30,6 +30,8 @@ public class Enemy : LivingEntity
     public bool HasStopped = false;
     bool doUpdate = true;
 
+    public float decoyRadius = 25.0f;
+    public float pulseRadius = 30.0f;
     // Use this for initialization
     protected override void Start()
     {
@@ -69,18 +71,25 @@ public class Enemy : LivingEntity
 
     void OnTargetPulse()
     {
-        hasTarget = true;
-        currentState = State.Chasing;
-
-        moveTime = Time.timeSinceLevelLoad + moveDuration;
+        float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
+        if (sqrDstToTarget < Mathf.Pow(pulseRadius, 2))
+        {
+            hasTarget = true;
+            currentState = State.Chasing;
+            moveTime = Time.timeSinceLevelLoad + moveDuration;
+        }
     }
 
 
     void OnTargetDrop()
     {
-        hasTarget = true;
-        currentState = State.Baited;
-        moveTime = Time.timeSinceLevelLoad + moveDuration;
+        float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
+        if (sqrDstToTarget < Mathf.Pow(decoyRadius, 2))
+        {
+            hasTarget = true;
+            currentState = State.Baited;
+            moveTime = Time.timeSinceLevelLoad + moveDuration;
+        }
     }
 
 

@@ -108,7 +108,7 @@ public class Player : LivingEntity {
         controller.Move(moveVelocity, rotate);
 
         //Pulse Input
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && pulseSlider.value == 100)
         {
             if (Time.timeSinceLevelLoad > nextPulseAvailableTime)
             {

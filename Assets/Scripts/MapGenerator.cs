@@ -106,7 +106,7 @@ public class MapGenerator : MonoBehaviour {
             }
         }
         Player spawnedPlayer = Instantiate(player, CoordToPosition(currentMap.spawnCoord.x, currentMap.spawnCoord.y, 1), Quaternion.identity) as Player;
-
+        
         // Spawn Key
         while (true)
         {
@@ -134,6 +134,8 @@ public class MapGenerator : MonoBehaviour {
                 }
             }
         }
+
+        GameObject.FindGameObjectWithTag("FOW").GetComponent<FowScript>().UpdateMaterial(GameObject.FindGameObjectWithTag("Player"));
     }
 
     void GenerateObstacles() {

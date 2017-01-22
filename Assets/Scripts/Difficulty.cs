@@ -10,6 +10,7 @@ public class Difficulty : MonoBehaviour {
 	public Button calmButton;
 	public Button sadButton;
 	public Button existentialDespairButton;
+    public Button backButton;
     bool controllerConnected;
 
     // Use this for initialization
@@ -26,6 +27,10 @@ public class Difficulty : MonoBehaviour {
 		existentialDespairButton = existentialDespairButton.GetComponent<Button> ();
 		existentialDespairButton.onClick.AddListener (ExistentialDespairButtonButtonClicked);
 
+
+        backButton = backButton.GetComponent<Button>();
+        backButton.onClick.AddListener(BackButtonClicked);
+
         string[] names = Input.GetJoystickNames();
 
         controllerConnected = false;
@@ -41,6 +46,17 @@ public class Difficulty : MonoBehaviour {
 
     }
 
+    private void Update()
+    {
+
+        if (Input.GetButtonDown("Fire3"))
+        {
+            BackButtonClicked();
+        }
+    }
+
+ 
+
 	void CalmButtonClicked(){
 		PlayerPrefs.SetInt ("Difficulty", 1);
 		SceneManager.LoadScene ("Level1");
@@ -55,4 +71,8 @@ public class Difficulty : MonoBehaviour {
 		PlayerPrefs.SetInt ("Difficulty", 4);
 		SceneManager.LoadScene ("Level1");
 	}
+
+    void BackButtonClicked(){
+        SceneManager.LoadScene("Menu");
+    }
 }
