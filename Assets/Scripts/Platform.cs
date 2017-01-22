@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Platform : MonoBehaviour {
+public class Platform : MonoBehaviour
+{
 
     bool _startAnimation;
     float _time;
@@ -11,17 +12,19 @@ public class Platform : MonoBehaviour {
     public event System.Action OnEscape;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         _platform = GameObject.Find("Platform");
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (_startAnimation) {
-            //var player = GameObject.FindGameObjectWithTag("Player");
-            if (Time.timeSinceLevelLoad - _time < 2 )
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (_startAnimation)
+        {
+            if (Time.timeSinceLevelLoad - _time < 3)
             {
-                Vector3 pos = _platform.transform.position;
+                Vector3 pos = transform.position;
                 pos.y += Time.deltaTime;
                 transform.position = pos;
             }
@@ -30,16 +33,6 @@ public class Platform : MonoBehaviour {
                 _startAnimation = false;
             }
         }
-	}
-
-    void EndGame()
-    {
-        var enemies = GameObject.FindObjectsOfType<Enemy>();
-        foreach (var e in enemies)
-        {
-            e.HasStopped = true;
-        }
-        SceneManager.LoadScene("Menu");
     }
 
     void OnCollisionEnter(Collision col)
@@ -48,7 +41,14 @@ public class Platform : MonoBehaviour {
         {
             if (col.gameObject.GetComponent<Player>().hasKey)
             {
-                EndGame();
+                _time = Time.realtimeSinceStartup;
+                _startAnimation = true;
+                col.gameObject.GetComponent<Player>().Goto(new Vector3(transform.position.x, col.gameObject.transform.position.y, transform.position.z));
+                var enemies = GameObject.FindObjectsOfType<Enemy>();
+                foreach (var e in enemies)
+                {
+                    e.HasStopped = true;
+                }
             }
         }
     }
