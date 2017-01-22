@@ -65,31 +65,25 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
         if (((health / startingHealth) < 0.7) && (((health + damage) / startingHealth) >= 0.7))
         {
-            // Update sound
-            print("Sound 4");
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                var breathe2 = Resources.Load<AudioClip>("breathing4");
-                player.GetComponent<AudioSource>().clip = breathe2;
-                player.GetComponent<AudioSource>().loop = true;
-                player.GetComponent<AudioSource>().Play();
-            }
+            ChangePlayerSound("breathing4");
         }
 
         if (((health / startingHealth) < 0.4) && (((health + damage) / startingHealth) >= 0.4))
         {
-            // Update sound
-            print("Sound 5");
+            ChangePlayerSound("breathing5");
+        }
+    }
 
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                var breathe3 = Resources.Load<AudioClip>("breathing5");
-                player.GetComponent<AudioSource>().clip = breathe3;
-                player.GetComponent<AudioSource>().loop = true;
-                player.GetComponent<AudioSource>().Play();
-            }
+
+    protected void ChangePlayerSound(string clipName)
+    {
+        var breathe = Resources.Load<AudioClip>(clipName);
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<AudioSource>().clip = breathe;
+            player.GetComponent<AudioSource>().loop = true;
+            player.GetComponent<AudioSource>().Play();
         }
     }
 
