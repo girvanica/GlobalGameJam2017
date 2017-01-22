@@ -27,4 +27,22 @@ public static class Utility {
     {
         return (Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2)) < (distance * distance);
     }
+
+	public static float Approach (float fromValue, float toValue, float dt) {
+
+		//get how much left
+		float diff = toValue - fromValue;
+
+		//we haven't reached it
+		if (diff > dt) {
+			return fromValue + dt;
+		} 
+
+		if (diff < -dt) {
+			return fromValue - dt;
+		}
+
+		return toValue;
+
+	}
 }
