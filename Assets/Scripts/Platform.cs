@@ -23,6 +23,9 @@ public class Platform : MonoBehaviour
     {
         if (_startAnimation)
         {
+            // Play sound
+            var audioClip = Resources.Load<AudioClip>("ed_door_3");
+            AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
             if (Time.timeSinceLevelLoad < _time)
             {
                 Vector3 pos = transform.position;
