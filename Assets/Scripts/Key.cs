@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Key : MonoBehaviour {
 
@@ -24,6 +25,7 @@ public class Key : MonoBehaviour {
             var audioClip = Resources.Load<AudioClip>("ed_key");
             AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
             NumberOfKeys++;
+            GameObject.FindGameObjectWithTag("Orb").GetComponent<Image>().color = Color.white;
             Destroy(_key);
         }
     }

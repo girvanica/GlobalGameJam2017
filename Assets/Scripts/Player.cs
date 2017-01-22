@@ -62,7 +62,7 @@ public class Player : LivingEntity {
                 nextPulseAvailableTime = Time.timeSinceLevelLoad + pulseCooldown;
                 // Play pulse
                 var audioClip = Resources.Load<AudioClip>("ed_pulse_4c");
-                AudioSource.PlayClipAtPoint(audioClip, new Vector3(5, 1, 2));
+                AudioSource.PlayClipAtPoint(audioClip, transform.position);
                 triggerPulse();
                 //print("Pulse");
                 if (pulseSlider != null)
